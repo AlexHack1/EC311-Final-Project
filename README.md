@@ -4,4 +4,4 @@
 
 [Planning Doc](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
 
-[Meeting Minutes] (https://docs.google.com/document/d/1sm5ls5zhQ8x1Nxw--W5M_PYoI4fzIjPUxbyc21xwfzI/edit)
+[Meeting Minutes](https://docs.google.com/document/d/1sm5ls5zhQ8x1Nxw--W5M_PYoI4fzIjPUxbyc21xwfzI/edit)
