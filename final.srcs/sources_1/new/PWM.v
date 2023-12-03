@@ -1,21 +1,39 @@
-module pwm_generator (
-    input clk,
-    input reset,
-    input [7:0] duty_cycle, // 8-bit duty cycle  (0-255)
-    output reg pwm_signal
+module pwm_generator #(
+    parameter integer PWM_RESOLUTION = 8 // default
+)(
+    input wire clk,
+    input wire rst,
+    output reg pwm_out
 );
 
-// 8 bit counter
-reg [7:0] counter = 0;
+    reg [PWM_RESOLUTION-1:0] duty_cycle;
+    reg [PWM_RESOLUTION-1:0] counter;
 
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
-        counter <= 0;
-        pwm_signal <= 0;
-    end else begin
-        counter <= counter + 1'b1;
-        pwm_signal <= (counter < duty_cycle) ? 1'b1 : 1'b0; // PWM signal is high when counter is less than duty cycle
+    // PWM output logic
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            counter <= 0;
+            pwm_out <= 0;
+        end else begin
+            counter <= counter + 1'b1;
+
+            if (counter < duty_cycle) begin
+                pwm_out <= 1'b1;
+            end else begin
+                pwm_out <= 1'b0;
+            end
+        end
     end
-end
+
+    // Duty cycle update logic
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            duty_cycle <= 0;
+        end else if (counter == {PWM_RESOLUTION{1'b1}} - 1) begin
+            // Update duty cycle when counter is about to roll over
+            duty_cycle <= duty_cycle + 1'b1;
+        end
+    end
 
 endmodule
+
