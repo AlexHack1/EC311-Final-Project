@@ -36,3 +36,4 @@ module pwm_generator #(
     end
 
 endmodule
+
