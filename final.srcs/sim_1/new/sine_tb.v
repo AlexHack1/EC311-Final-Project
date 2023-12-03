@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -25,7 +24,6 @@ module sine_tb(
 
     );
 endmodule
-=======
 module tb;
 
     // Inputs
@@ -45,4 +43,3 @@ module tb;
     always #5 Clk = ~Clk;
     
 endmodule
->>>>>>> 71188de7526a813006510ee36a7df55c916638ef

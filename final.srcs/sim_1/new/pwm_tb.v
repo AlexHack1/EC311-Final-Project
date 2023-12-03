@@ -2,47 +2,36 @@
 
 module pwm_generator_tb;
 
-    parameter PWM_RESOLUTION = 8; // 8-bit resolution
-    parameter CLK_PERIOD = 10;    // Clock period in ns (100 MHz clock for PWM frequency >= 50 kHz)
-    parameter integer MAX_DUTY_CYCLE = 1 << PWM_RESOLUTION; // Maximum duty cycle value
-    parameter integer SIM_STEP = CLK_PERIOD * 256; // Time step to change the duty cycle
-    parameter integer SIM_DURATION = SIM_STEP * MAX_DUTY_CYCLE * 2; // I want to run sim for 2 cycles (1310720 ns = 1.31 ms)
+    parameter PWM_RESOLUTION = 8; // 8 bit
+    parameter CLK_PERIOD = 10;    // Clock period in ns (100 MHz clock)
+    parameter integer MAX_DUTY_CYCLE = 1 << PWM_RESOLUTION; // Maximum duty cycle value (2^PWM_RESOLUTION)
+    parameter integer SIM_STEP = CLK_PERIOD * 256; // Time step to change the duty cycle (256 clock cycles)
+    parameter integer SIM_DURATION = SIM_STEP * MAX_DUTY_CYCLE; // Total simulation time                                              
 
     reg clk = 0;
     reg rst = 1;
+    reg [PWM_RESOLUTION-1:0] duty_cycle = 0; // Duty cycle for PWM generator
 
     wire pwm_out;
-    reg [PWM_RESOLUTION-1:0] duty_cycle = 0; // Duty cycle for PWM
 
     pwm_generator #(.PWM_RESOLUTION(PWM_RESOLUTION)) uut (
         .clk(clk),
         .rst(rst),
+        .duty_cycle(duty_cycle),
         .pwm_out(pwm_out)
     );
 
-    // simulated hardware clock of 100 MHz (10 ns period)
+    // simulate a 100 MHz hardware clock
     always #(CLK_PERIOD / 2) clk = ~clk;
 
-    // Duty cycle increment logic every SIM_STEP (this would need to be connected to a potentiometer in hardware)
-    always #(SIM_STEP) duty_cycle <= duty_cycle + 1;
-
-    // Connect duty cycle to UUT (if needed)
-    always @(posedge clk) begin
-        if (rst) begin
-            uut.duty_cycle <= 0;
-        end else begin
-            uut.duty_cycle <= duty_cycle;
-        end
-    end
+    // Duty cycle control (increment duty cycle by 1 every SIM_STEP) - for display only, real code would have to change duty_cycle 
+    always #(SIM_STEP) if (!rst) duty_cycle <= duty_cycle + 1;
 
     initial begin
-        // reset at start for a moment
+        // reset for a bit
         #(CLK_PERIOD * 5);
         rst = 0;
-
-        // Run the simulation for the duration defined above
         #(SIM_DURATION);
-    
         $finish;
     end
 

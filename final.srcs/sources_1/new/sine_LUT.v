@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module eight_bit_cos_LUT(
+module eight_bit_sin_LUT(
     input clk,
     input [3:0] freq_mul,
     output reg [7:0] cos_out,
