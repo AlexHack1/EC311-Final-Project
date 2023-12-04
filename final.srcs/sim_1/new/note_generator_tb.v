@@ -1,37 +1,62 @@
 `timescale 1ns / 1ps
 
-module tb_note_generator;
-   reg clk;
-   reg rst;
-   reg [3:0] note;
-   wire pwm_out;
+module note_generator_tb;
 
-   note_generator uut (
-       .clk(clk),
-       .rst(rst),
-       .note(note),
-       .pwm_out(pwm_out)
-   );
+    // Parameters
+    parameter integer NOTE_COUNT = 12;
+    parameter integer PWM_RESOLUTION = 8;
+    parameter integer OCTAVE_MAX = 7;
+    parameter integer CLK_FREQUENCY = 1000000; // 1 MHz for example
 
-   // simulated 100MHz clock
-   always begin
-       #10 clk = ~clk;
-   end
+    // Inputs
+    reg clk;
+    reg rst;
+    reg [3:0] note;
+    reg [1:0] octave_change;
 
-   initial begin
-       clk = 0;
-       rst = 1;
-       note = 0;
+    // Outputs
+    wire pwm_out;
 
-       // Wait a bit for a reset
-       #10 rst = 0;
+    // Instantiate the Unit Under Test (UUT)
+    note_generator #(
+        .NOTE_COUNT(NOTE_COUNT),
+        .PWM_RESOLUTION(PWM_RESOLUTION),
+        .OCTAVE_MAX(OCTAVE_MAX),
+        .CLK_FREQUENCY(CLK_FREQUENCY)
+    ) uut (
+        .clk(clk),
+        .rst(rst),
+        .note(note),
+        .octave_change(octave_change),
+        .pwm_out(pwm_out)
+    );
 
-       // notes
-       for (note = 0; note < 12; note = note + 1) begin
-           #10;
-           $display("Note: %d, Frequency: %d Hz", note, uut.note_freqs[note]);
-       end
+    // Clock generation
+    always #5 clk = ~clk; // 100 MHz clock
 
-       #10 $finish;
-   end
+    // Test sequence
+    initial begin
+        // Initialize Inputs
+        clk = 0;
+        rst = 1;
+        note = 0;
+        octave_change = 2'b00;
+
+        // Reset the system
+        #100;
+        rst = 0;
+
+        // Test different notes and octaves
+        #10000; note = 0; octave_change = 2'b00; // Note C, middle octave 
+        #10000; note = 1; octave_change = 2'b00; // Note C#, middle octave
+        #10000; note = 2; octave_change = 2'b10; // Note D, octave up
+        #10000; note = 3; octave_change = 2'b01; // Note D#, octave down
+        #10000; note = 4; octave_change = 2'b00; // Note E, middle octave
+        // Continue testing other notes and octave changes...
+
+        // End of test
+        #500;
+        $finish;
+    end
+
 endmodule
