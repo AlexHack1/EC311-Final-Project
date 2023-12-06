@@ -2,7 +2,7 @@ module note_generator #(
     parameter integer NOTE_COUNT = 12,
     parameter integer PWM_RESOLUTION = 8, // PWM resolution in bits
     parameter integer OCTAVE_MAX = 7, // Maximum octave (not used for now since we only shift by one octave)
-    parameter integer CLK_FREQUENCY = 1000000 // Clock frequency in Hz - 1 MHz
+    parameter integer CLK_FREQUENCY = 100000 // Clock frequency in Hz - 100kHz default
 )(
     input wire clk,
     input wire rst,
@@ -11,7 +11,8 @@ module note_generator #(
     output reg pwm_out // PWM output - can be tied directly to a speaker
 );
 
-    reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
+    //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
+    reg [31:0] counter =0;
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_count = 3'd4; // Octave count (starting at middle C)
 
@@ -47,11 +48,11 @@ module note_generator #(
         // Adjust frequency based on the octave
         if (octave_shift > 0) begin
             // For higher octaves, multiply by 2 for each octave above the 4th
-            frequency = frequency * (2 ** 1); // Multiply by 2 for each octave up (shift left)
+            frequency = frequency * (2 * 1); // Multiply by 2 for each octave up (shift left)
         end else if (octave_shift < 0) begin
             // For lower octaves, divide by 2 for each octave below the 4th
-            frequency = frequency >> 1; // Divide by 2 for each octave down (shift right)
-        end
+            frequency = frequency / (2 * 1); // Divide by 2 for each octave down (shift right)
+        end 
 
         // If octave_shift is 0 then this block does nothing
     end
@@ -76,14 +77,15 @@ module note_generator #(
             counter <= 0;
             pwm_out <= 0;
         end else begin
-            counter <= counter + 1'b1;
+            counter <= counter + 1'b1; // increment counte
 
-            // Adjust PWM frequency based on the calculated frequency
-            if (counter >= (CLK_FREQUENCY / (2 * frequency))) begin
+            // sets pwm counter back to 0
+            if (counter >= ((CLK_FREQUENCY*100) / (2 * frequency))) begin // have to multiply CLK_FREQUENCY by 100 since note LUT are 100X freq we want
                 counter <= 0;
             end
 
-            pwm_out <= (counter < (CLK_FREQUENCY / (2 * frequency))) ? 1'b1 : 1'b0; // 50% Duty Cycle (square wave)
+            // adjust actual pwm high/low
+            pwm_out <= (counter < ((CLK_FREQUENCY*100) / (4 * frequency))) ? 1'b1 : 1'b0; // 50% Duty Cycle (square wave)
         end
     end
 
