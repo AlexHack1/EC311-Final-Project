@@ -7,7 +7,7 @@ module note_generator_tb;
     parameter integer PWM_RESOLUTION = 8;
     parameter integer OCTAVE_MAX = 7;
     parameter integer CLK_FREQUENCY = 100000; // 100 kHz for example
-    parameter integer NOTE_TIME = 20000000; // time to play each note
+    parameter integer NOTE_TIME = 8000000; // time to play each note
     parameter integer DUTY_CYCLE = 3;
 
     // Inputs
