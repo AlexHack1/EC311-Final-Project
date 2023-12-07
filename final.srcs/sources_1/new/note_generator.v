@@ -1,27 +1,31 @@
+`timescale 1ns / 1ps
+
 module note_generator #(
     parameter integer NOTE_COUNT = 12,
     parameter integer PWM_RESOLUTION = 8, // PWM resolution in bits
     parameter integer OCTAVE_MAX = 7, // Maximum octave (not used for now since we only shift by one octave)
-    parameter integer CLK_FREQUENCY = 100000 // Clock frequency in Hz - 100kHz default
+    parameter integer CLK_FREQUENCY = 100000, // Clock frequency in Hz - 100kHz default
+    parameter integer DUTY_CYCLE = 2 //default duty cycle of 50% = 2 (meaning 2 is the divisor)
 )(
     input wire clk,
     input wire rst,
     input wire [3:0] note, // Note input (0-11 for C-B)
     input wire [1:0] octave_change, // Octave change input (00: no change, 01: decrement, 10: increment)
-    output reg pwm_out // PWM output - can be tied directly to a speaker
+    output reg pwm_out, // PWM output - can be tied directly to a speaker
+    output wire pwm_led //for testing
 );
 
+    assign pwm_led = pwm_out;
+
     //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
-    reg [31:0] counter =0;
+    reg [31:0] counter = 0;
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_count = 3'd4; // Octave count (starting at middle C)
 
-    // Frequency LUT for base octave (4th octave, i.e., middle C)
+    // Frequency LUT for base octave (4th octave, ie middle C)
     integer base_freqs [0:NOTE_COUNT-1];
-
-    // Initialize the frequency array
     initial begin
-        // Frequencies for the 4th octave
+        // 100X Frequencies for the 4th octave 
         base_freqs[0] = 26163; // C
         base_freqs[1] = 27718; // C#
         base_freqs[2] = 29366; // D
@@ -70,22 +74,21 @@ module note_generator #(
         end
     end
 
-
     // PWM Output Block
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             counter <= 0;
             pwm_out <= 0;
         end else begin
-            counter <= counter + 1'b1; // increment counte
-
-            // sets pwm counter back to 0
-            if (counter >= ((CLK_FREQUENCY*100) / (2 * frequency))) begin // have to multiply CLK_FREQUENCY by 100 since note LUT are 100X freq we want
+            counter <= counter + 1'b1; // increment counter
+    
+            // Reset the counter when the full period is reached
+            if (counter >= ((CLK_FREQUENCY*100) / (2 * frequency))) begin
                 counter <= 0;
             end
-
-            // adjust actual pwm high/low
-            pwm_out <= (counter < ((CLK_FREQUENCY*100) / (4 * frequency))) ? 1'b1 : 1'b0; // 50% Duty Cycle (square wave)
+    
+            // Set pwm_out high for duty cycle 
+            pwm_out <= (counter < ((CLK_FREQUENCY*100) / (2 * frequency) / DUTY_CYCLE)) ? 1'b1 : 1'b0;
         end
     end
 

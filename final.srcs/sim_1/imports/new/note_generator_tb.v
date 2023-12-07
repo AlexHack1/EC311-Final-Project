@@ -7,7 +7,8 @@ module note_generator_tb;
     parameter integer PWM_RESOLUTION = 8;
     parameter integer OCTAVE_MAX = 7;
     parameter integer CLK_FREQUENCY = 100000; // 100 kHz for example
-    parameter integer NOTE_TIME = 20000000; // time to play each note
+    parameter integer NOTE_TIME = 8000000; // time to play each note
+    parameter integer DUTY_CYCLE = 3;
 
     // Inputs
     reg clk;
@@ -23,7 +24,8 @@ module note_generator_tb;
         .NOTE_COUNT(NOTE_COUNT),
         .PWM_RESOLUTION(PWM_RESOLUTION),
         .OCTAVE_MAX(OCTAVE_MAX),
-        .CLK_FREQUENCY(CLK_FREQUENCY)
+        .CLK_FREQUENCY(CLK_FREQUENCY),
+        .DUTY_CYCLE(DUTY_CYCLE)
     ) uut (
         .clk(clk),
         .rst(rst),
@@ -35,6 +37,30 @@ module note_generator_tb;
     // Clock generation
     always #(5000) clk = ~clk; // 100 kHz clock
     // always #5 clk = ~clk; // 100 MHz clock
+    
+    
+    // Additional Variables for Duty Cycle Check
+    reg [31:0] last_rising_edge_time;
+    reg [31:0] last_falling_edge_time;
+    reg [31:0] high_time;
+    reg [31:0] low_time;
+
+    // Monitor pwm_out for changes
+    always @(posedge pwm_out or negedge pwm_out) begin
+        if(pwm_out) begin
+            // Rising edge detected
+            last_rising_edge_time = $time; // Capture the current simulation time
+            low_time = last_rising_edge_time - last_falling_edge_time; // Calculate the low time duration
+            if (last_falling_edge_time > 0) begin // Avoid printing at the initial rising edge
+                $display("Low time: %0d ns", low_time);
+            end
+        end else begin
+            // Falling edge detected
+            last_falling_edge_time = $time; // Capture the current simulation time
+            high_time = last_falling_edge_time - last_rising_edge_time; // Calculate the high time duration
+            $display("High time: %0d ns", high_time);
+        end
+    end
 
 
     // Test sequence
