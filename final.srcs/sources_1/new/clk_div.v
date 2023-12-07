@@ -1,24 +1,19 @@
-`timescale 1ns / 1ps
-// fpga4student.com: FPGA projects, VHDL projects, Verilog projects
-// Verilog project: Verilog code for clock divider on FPGA
-// Top level Verilog code for clock divider on FPGA
-module Clock_divider(
-    input clock_in, //100 MHz
-    output reg clock_out // 1kHz output
-    );
+module clk_div(
+    input wire clk_in,  // Input clock (100 MHz)
+    output reg clk_out  // Output clock (100 kHz)
+);
 
-reg[27:0] counter=28'd0;
-parameter DIVISOR = 28'd100000;
-// The frequency of the output clk_out
-//  = The frequency of the input clk_in divided by DIVISOR
-// For example: Fclk_in = 50Mhz, if you want to get 1Hz signal to blink LEDs
-// You will modify the DIVISOR parameter value to 28'd50.000.000
-// Then the frequency of the output clk_out = 50Mhz/50.000.000 = 1Hz
-always @(posedge clock_in)
-begin
- counter <= counter + 28'd1;
- if(counter>=(DIVISOR-1))
-  counter <= 28'd0;
- clock_out <= (counter<DIVISOR/2)?1'b1:1'b0;
-end
+    // Divider value for 100MHz to 100kHz
+    // 100 MHz / 100 kHz = 1000, but divide by 500 for toggling every half period
+    reg [9:0] counter = 0; // 10-bit counter for division by 1000
+    parameter DIVIDE_VALUE = 500; // Half of 1000 for 50% duty cycle
+
+    always @(posedge clk_in) begin
+        counter <= counter + 1;
+        if (counter >= DIVIDE_VALUE - 1) begin
+            counter <= 0;
+            clk_out <= ~clk_out; // Toggle the output clock
+        end
+    end
+
 endmodule

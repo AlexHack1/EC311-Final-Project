@@ -1,51 +1,50 @@
-`timescale 1ns / 1ps
-
 module top(
-    input CLK100MHZ, // System clock (100MHz)
-    input rst,
-    output wire AUD_PWM // PWM output direct to speaker
+    input wire CLK100MHZ,       // FPGA board clock (assumed to be much higher than 1kHz)
+    input wire rst_button,      // Reset button
+    input wire next_note_button,// Button to change to the next note
+    output wire AUD_PWM         // Output to a speaker or an LED
 );
 
-    // Parameters for the note generator
-    parameter integer NOTE_COUNT = 12;
-    parameter integer PWM_RESOLUTION = 8;
-    parameter integer OCTAVE_MAX = 7;
-    parameter integer CLK_FREQUENCY = 1000000;
+    reg [3:0] note = 0;          // Note storage
+    reg [1:0] octave_change = 0; // Octave change variable
+    wire rst;                    // Internal reset signal
+    wire clk_100kHz;
 
-    // Internal signals
-    reg [3:0] current_note = 0; // Current note (0-11 for C-B)
-    reg [1:0] octave_change = 2'b00; // No octave change by default
-    reg [23:0] note_change_counter = 0; // Counter to change notes periodically
+    clk_div my_clk_100kHz(
+        .clk_in(CLK100MHZ),
+        .clk_out(clk_100kHz)
+    );
 
-    // note generator module
+    // Instantiate note_generator with 100kHz clock
     note_generator #(
-        .NOTE_COUNT(NOTE_COUNT),
-        .PWM_RESOLUTION(PWM_RESOLUTION),
-        .OCTAVE_MAX(OCTAVE_MAX),
-        .CLK_FREQUENCY(CLK_FREQUENCY)
-    ) note_gen (
-        .clk(clk),
+        .NOTE_COUNT(12),
+        .PWM_RESOLUTION(8),
+        .OCTAVE_MAX(7),
+        .CLK_FREQUENCY(100000), // 100kHz clock
+        .DUTY_CYCLE(2)         // Duty cycle (square wave)
+    ) my_note_generator (
+        .clk(clk_100kHz),
         .rst(rst),
-        .note(current_note),
+        .note(note),
         .octave_change(octave_change),
         .pwm_out(AUD_PWM)
     );
 
-    // Note change logic
-    always @(posedge clk or posedge rst) begin
+    // Logic to handle note changes
+    always @(posedge CLK100MHZ) begin
         if (rst) begin
-            current_note <= 0;
-            note_change_counter <= 0;
-        end else begin
-            // Increment the note change counter
-            note_change_counter <= note_change_counter + 1'b1;
-
-            // Change the note every predefined interval
-            if (note_change_counter >= 24'd1000000) begin // controls how long each note is played
-                current_note <= (current_note + 1) % NOTE_COUNT; // increment note
-                note_change_counter <= 0;
+            note <= 0;
+        end else if (next_note_button) begin
+            if (note < 11) begin
+                note <= note + 1;
+            end else begin
+                note <= 0;
+                // Handle octave change here if desired
             end
         end
     end
+
+    // Reset logic (inverted if button is active-low)
+    assign rst = ~rst_button;
 
 endmodule

@@ -3,7 +3,7 @@ module note_generator #(
     parameter integer PWM_RESOLUTION = 8, // PWM resolution in bits
     parameter integer OCTAVE_MAX = 7, // Maximum octave (not used for now since we only shift by one octave)
     parameter integer CLK_FREQUENCY = 100000, // Clock frequency in Hz - 100kHz default
-    parameter integer DUTY_CYCLE = 2 //default duty cycle of 50%
+    parameter integer DUTY_CYCLE = 2 //default duty cycle of 50% = 2 (meaning 2 is the divisor)
 )(
     input wire clk,
     input wire rst,
@@ -13,16 +13,14 @@ module note_generator #(
 );
 
     //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
-    reg [31:0] counter =0;
+    reg [31:0] counter = 0;
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_count = 3'd4; // Octave count (starting at middle C)
 
-    // Frequency LUT for base octave (4th octave, i.e., middle C)
+    // Frequency LUT for base octave (4th octave, ie middle C)
     integer base_freqs [0:NOTE_COUNT-1];
-
-    // Initialize the frequency array
     initial begin
-        // Frequencies for the 4th octave
+        // 100X Frequencies for the 4th octave 
         base_freqs[0] = 26163; // C
         base_freqs[1] = 27718; // C#
         base_freqs[2] = 29366; // D
@@ -70,7 +68,6 @@ module note_generator #(
             endcase
         end
     end
-
 
     // PWM Output Block
     always @(posedge clk or posedge rst) begin
