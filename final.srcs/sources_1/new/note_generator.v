@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module note_generator #(
     parameter integer NOTE_COUNT = 12,
     parameter integer PWM_RESOLUTION = 8, // PWM resolution in bits
@@ -9,8 +11,11 @@ module note_generator #(
     input wire rst,
     input wire [3:0] note, // Note input (0-11 for C-B)
     input wire [1:0] octave_change, // Octave change input (00: no change, 01: decrement, 10: increment)
-    output reg pwm_out // PWM output - can be tied directly to a speaker
+    output reg pwm_out, // PWM output - can be tied directly to a speaker
+    output wire pwm_led //for testing
 );
+
+    assign pwm_led = pwm_out;
 
     //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
     reg [31:0] counter = 0;
