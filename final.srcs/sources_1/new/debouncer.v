@@ -1,14 +1,9 @@
-//
-// NOTE we modified the Moore machine slightly when we ran this part on the FPGA. The original moore machine for p1 is in moore_FSM_OG and the new moore machine is moore_FSM
-// This module we ran on the FPGA tied to the buttons.
-//
-
 `timescale 1ns / 1ps
 
 module debouncer(
     input clk,
     input button,
-    output reg clean 
+    output reg clean //clean signal, high or low
     );
     reg [19:0]deb_count;
     reg output_exist; // indicates if the clean output is set
