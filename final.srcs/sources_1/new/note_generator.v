@@ -11,8 +11,7 @@ module note_generator #(
     input wire clk,
     input wire rst,
     input wire [3:0] note, // Note input (0-11 for C-B)
-//    input wire octave_up, //octave up button
-//    input wire octave_down, //octave donwn button
+
     input wire [3:0] duty_cycle_type, // 00 is 50% 01 is sine...
     input [2:0] octave_in,
 
@@ -49,45 +48,14 @@ module note_generator #(
         base_freqs[11] = 49388; // B
     end
 
-    // PWM Frequency Calculation
-//    integer octave_shift;
-//    always @* begin
-//        // Start with the base frequency for the current note
-//        frequency = base_freqs[note];
-        
-//        // Calculate the octave shift from the 4th octave
-//        octave_shift = octave_count - 4;
-        
-//        // Adjust frequency based on the octave
-//        if (octave_shift > 0) begin
-//            // For higher octaves, multiply by 2 for each octave above the 4th
-//            frequency = frequency * (2 * 1); // Multiply by 2 for each octave up (shift left)
-//        end else if (octave_shift < 0) begin
-//            // For lower octaves, divide by 2 for each octave below the 4th
-//            frequency = frequency / (2 * 1); // Divide by 2 for each octave down (shift right)
-//        end 
-//        current_frequency = frequency; // for display
-//        // If octave_shift is 0 then this block does nothing
-//    end
-
-    // Octave Adjustment Block
-//    always @(posedge clk or posedge rst) begin
-//        if (rst) begin
-//            octave_count <= 3'd4; // Reset to middle C
-//        end else begin
-//            if (octave_up) octave_count <= octave_count + 1; // Increment octave
-//            if (octave_down) octave_count <= octave_count - 1; // Decrement octave
-//            if (octave_count > OCTAVE_MAX)
-//                octave_count <= 3'd4; //reset middle C
-//        end
-//    end
-
+    // octave adjustment based on octave_in
     always @ (posedge clk) begin
         octave_reg <= octave_in;
         if (rst) begin // Reset to middle C
                 frequency = base_freqs[note];
         end
         case(octave_reg)
+            0: frequency = base_freqs[note]/16;
             1: frequency = base_freqs[note]/8;
             2: frequency = base_freqs[note]/4;
             3: frequency = base_freqs[note]/2;
