@@ -42,7 +42,7 @@ module PS2Receiver(
         flag<=1'b0;
     end
     
-debouncer debounce(
+debouncer_michael debounce(
     .clk(clk),
     .I0(kclk),
     .I1(kdata),
