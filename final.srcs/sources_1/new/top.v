@@ -17,7 +17,7 @@ module top(
 );
 
     reg [3:0] note = 0;          // Note storage
-    reg [2:0] octave; //octave storage
+    reg [2:0] octave = 4; //octave storage
     wire clk_100kHz;
     wire clk_500Hz;
     wire [27:0] current_freq;
@@ -30,7 +30,8 @@ module top(
     wire key_flag; //flag if key pressed
     
     // display mode gets tied to 7seg disp
-    reg [2:0] disp_mode;
+    reg [2:0] disp_mode = 00;
+    reg [2:0] wave_type = 00;
     
     
     //clk divider for PS2 Receiver
@@ -50,6 +51,7 @@ module top(
     always @ (posedge key_flag) begin //keybinds
         case(keycode[7:0]) // only need to look at 8 bits of keycode
         
+            // notes
             'h1C:  begin // a --> decrement octave and set note to b
                 //note = 11;
                 octave = octave-1;
@@ -65,13 +67,13 @@ module top(
                 //note = 0;
                 octave = octave+1;
             end 
-            
             'h24: note = 1;// e --> C#/Dflat
             'h2D: note = 3;//r --> D#/Ef
             'h35: note = 6;//y --> F#/Gf
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
             
+            //octaves
             'h16: octave = 1; // num 1 --> octave 1
             'h1E: octave = 2;
             'h26: octave = 3;
@@ -80,9 +82,13 @@ module top(
             'h36: octave = 6;
             'h3D: octave = 7; // num 7 --> octave 7
             
+            // modes
             'h1a: disp_mode = 00; // z --> mode 00 (show note and octave)
             'h22: disp_mode = 01; // x --> mode 01 (show frequency)
             
+            'h32: wave_type = 00; // b --> 50% duty cycle (sqaure)
+            'h31: wave_type = 01; // n --> sine wave
+                       
             default:;
         endcase
     
@@ -105,13 +111,14 @@ module top(
         .NOTE_COUNT(12),
         .PWM_RESOLUTION(8),
         .OCTAVE_MAX(7),
-        .CLK_FREQUENCY(100000), // 100kHz clock
-        .DUTY_CYCLE(2)         // Duty cycle (for square wave = 2)
+        .CLK_FREQUENCY(100000) // 100kHz clock
+        //.DUTY_CYCLE(2)         // Duty cycle (for square wave = 2)
     ) my_note_generator (
         .clk(clk_100kHz),
         .rst(rst_button),
         .note(note),
         .octave_in(octave),
+        .duty_cycle_type(wave_type),
         .pwm_out(AUD_PWM),
         .pwm_led(led0),
         .octave_out(octave_out),
@@ -133,6 +140,7 @@ module top(
         .note(note),
         .octave(octave),
         .frequency(current_freq),
+        .pwm_type(wave_type),
         .val_TBD0(disp0),
         .val_TBD1(disp1),
         .val_TBD2(disp2),

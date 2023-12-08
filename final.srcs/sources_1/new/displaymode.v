@@ -8,6 +8,7 @@ module display_mode(
     input wire [3:0] note,
     input wire [2:0] octave,
     input wire [31:0] frequency,
+    input wire [3:0] pwm_type,
     
     output reg [4:0] val_TBD0, // disp0 (left digit)
     output reg [4:0] val_TBD1, // disp1
@@ -83,16 +84,19 @@ module display_mode(
                     end
                 endcase
                 
+                // assign to display note value and octave
                 val_TBD0 <= note_dig1;
                 val_TBD1 <= note_dig2;
                 val_TBD2 <= 5'b10001; // degree symbol (meaning octave)
                 val_TBD3 <= {1'b0, octave}; // octave number
 
-                // everything else is blank
+                // blanks
                 val_TBD4 <= NOTHING;
                 val_TBD5 <= NOTHING;
-                val_TBD6 <= NOTHING;
-                val_TBD7 <= NOTHING;
+                
+                // display wave mode (square or sine or whatever)
+                val_TBD6 <= {1'b0, pwm_type[3:2]}; // Display the upper 2 bits of pwm_type
+                val_TBD7 <= {1'b0, pwm_type[1:0]}; // Display the lower 2 bits of pwm_type
             end
             
             
