@@ -17,7 +17,6 @@ module note_generator #(
 
     output reg pwm_out, // PWM output - can be tied directly to a speaker
     output wire pwm_led, //for testing
-    output [2:0] octave_out, //passing to top to sevenseg display
     output reg [31:0] current_frequency // Output current frequency
 );
 
@@ -27,7 +26,6 @@ module note_generator #(
     reg [31:0] counter = 0;
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_reg = 3'd4; // Octave count (starting at middle C)
-    assign octave_out = octave_in;
     
     
     // SINE //

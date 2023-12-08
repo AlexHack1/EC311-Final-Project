@@ -49,7 +49,7 @@ module top(
     );
     
     always @ (posedge key_flag) begin //keybinds
-        case(keycode[7:0]) // only need to look at 8 bits of keycode
+        case(keycode[7:0]) // only need to look at 16 bits of keycode
         
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
@@ -121,7 +121,6 @@ module top(
         .duty_cycle_type(wave_type),
         .pwm_out(AUD_PWM),
         .pwm_led(led0),
-        .octave_out(octave_out),
         .current_frequency(current_freq)
     );
     
