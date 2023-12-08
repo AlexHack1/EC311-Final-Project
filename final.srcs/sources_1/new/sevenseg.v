@@ -48,6 +48,7 @@ module segment_disp(
     parameter NOTHING = 8'b11111111;  // disp nothing 
     parameter SYM_DEG = 8'b10011100;  // [] degree symbol
     parameter SYM_DASH= 8'b10111111;  // - negative symbol 
+    parameter LET_G =   8'b11000010;  // G
     always @(posedge clock_in) begin
         case(val_TBD[digit_counter])
             5'h0: seg_map = ZERO;       
@@ -69,6 +70,7 @@ module segment_disp(
             5'h10: seg_map = NOTHING; 
             5'b10001: seg_map = SYM_DEG;
             5'b10010: seg_map = SYM_DASH;
+            5'b10011: seg_map = LET_G;
             default : seg_map = 8'b11111111;  //turns all off
         endcase
         

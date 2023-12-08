@@ -58,23 +58,23 @@ module display_mode(
                         note_dig2 <= 5'h5; // # (5)
                     end
                     4'b0111: begin // G_
-                        note_dig1 <= 5'h10; // G
+                        note_dig1 <= 5'b10011; // G
                         note_dig2 <= NOTHING;
                     end
                     4'b1000: begin // G#
-                        note_dig1 <= 5'h10; // G
+                        note_dig1 <= 5'b10011; // G
                         note_dig2 <= 5'h5; // # (5)
                     end
                     4'b1001: begin // A_
-                        note_dig1 <= 5'h11; // A
+                        note_dig1 <= 5'hA; // A
                         note_dig2 <= NOTHING;
                     end
                     4'b1010: begin // A#
-                        note_dig1 <= 5'h11; // A
+                        note_dig1 <= 5'hA; // A
                         note_dig2 <= 5'h5; // # (5)
                     end
                     4'b1011: begin // B_
-                        note_dig1 <= 5'h12; // B
+                        note_dig1 <= 5'hB; // B
                         note_dig2 <= NOTHING;
                     end
                     default: begin // __
