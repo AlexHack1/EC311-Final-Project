@@ -10,9 +10,11 @@ module note_generator #(
     input wire clk,
     input wire rst,
     input wire [3:0] note, // Note input (0-11 for C-B)
-    input wire [1:0] octave_change, // Octave change input (00: no change, 01: decrement, 10: increment)
+    input wire octave_up, //octave up button
+    input wire octave_down, //octave donwn button
     output reg pwm_out, // PWM output - can be tied directly to a speaker
-    output wire pwm_led //for testing
+    output wire pwm_led, //for testing
+    output [2:0] octave_number //passing to top to sevenseg display
 );
 
     assign pwm_led = pwm_out;
@@ -21,6 +23,10 @@ module note_generator #(
     reg [31:0] counter = 0;
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_count = 3'd4; // Octave count (starting at middle C)
+    assign octave_number = octave_count;
+    
+    
+    
 
     // Frequency LUT for base octave (4th octave, ie middle C)
     integer base_freqs [0:NOTE_COUNT-1];
@@ -66,11 +72,10 @@ module note_generator #(
         if (rst) begin
             octave_count <= 3'd4; // Reset to middle C
         end else begin
-            case (octave_change)
-                2'b10: if (octave_count < OCTAVE_MAX) octave_count <= octave_count + 1; // Increment octave
-                2'b01: if (octave_count > 0) octave_count <= octave_count - 1; // Decrement octave
-                default: ; // No change
-            endcase
+            if (octave_up) octave_count <= octave_count + 1; // Increment octave
+            if (octave_down) octave_count <= octave_count - 1; // Decrement octave
+            if (octave_count > OCTAVE_MAX)
+                octave_count <= 3'd4; //reset middle C
         end
     end
 
@@ -83,12 +88,12 @@ module note_generator #(
             counter <= counter + 1'b1; // increment counter
     
             // Reset the counter when the full period is reached
-            if (counter >= ((CLK_FREQUENCY*100) / (2 * frequency))) begin
+            if (counter >= ((CLK_FREQUENCY*100) / (frequency))) begin
                 counter <= 0;
             end
     
             // Set pwm_out high for duty cycle 
-            pwm_out <= (counter < ((CLK_FREQUENCY*100) / (2 * frequency) / DUTY_CYCLE)) ? 1'b1 : 1'b0;
+            pwm_out <= (counter < ((CLK_FREQUENCY*100) / (frequency) / DUTY_CYCLE)) ? 1'b1 : 1'b0;
         end
     end
 

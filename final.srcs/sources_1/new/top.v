@@ -4,6 +4,8 @@ module top(
     input CLK100MHZ,       // FPGA board clock (assumed to be much higher than 1kHz)
     input rst_button,      // Reset button
     input next_note_button,// Button to change to the next note
+    input octave_up, //octave up button 
+    input octave_down, //octave down button
     output [7:0] cathode_seg,   // 7-segment cathode outputs
     output [7:0] anode_seg,      // 7-segment anode outputs (8 bits since we include decimal point here)
     output wire AUD_PWM,         // Output to a speaker or an 
@@ -11,7 +13,8 @@ module top(
 );
 
     reg [3:0] note = 0;          // Note storage
-    reg [1:0] octave_change = 0; // Octave change variable
+    wire [2:0] octave_number; //octave storage
+    //reg [1:0] octave_change = 0; // Octave change variable
     wire clk_100kHz;
     wire clk_500Hz;
     
@@ -38,9 +41,11 @@ module top(
         .clk(clk_100kHz),
         .rst(rst_button),
         .note(note),
-        .octave_change(octave_change),
+        .octave_up(octave_up),
+        .octave_down(octave_down),
         .pwm_out(AUD_PWM),
-        .pwm_led(led0)
+        .pwm_led(led0),
+        .octave_number(octave_number)
     );
 
     // basic note incrementer for debug
@@ -68,7 +73,7 @@ module top(
         .val_TBD2(5'b00000),
         .val_TBD1(5'b00000),
         .val_TBD0(5'b00000),
-        .val_TBD7(5'b00000), //deg symbol
+        .val_TBD7(octave_number), //deg symbol
         .val_TBD6(note), // c or f or nothing
 
         .clock_in(clk_500Hz),
