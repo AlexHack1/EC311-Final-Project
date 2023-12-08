@@ -14,7 +14,8 @@ module note_generator #(
     input wire octave_down, //octave donwn button
     output reg pwm_out, // PWM output - can be tied directly to a speaker
     output wire pwm_led, //for testing
-    output [2:0] octave_number //passing to top to sevenseg display
+    output [2:0] octave_number, //passing to top to sevenseg display
+    output reg [31:0] current_frequency // Output current frequency
 );
 
     assign pwm_led = pwm_out;
@@ -26,8 +27,6 @@ module note_generator #(
     assign octave_number = octave_count;
     
     
-    
-
     // Frequency LUT for base octave (4th octave, ie middle C)
     integer base_freqs [0:NOTE_COUNT-1];
     initial begin
@@ -63,7 +62,7 @@ module note_generator #(
             // For lower octaves, divide by 2 for each octave below the 4th
             frequency = frequency / (2 * 1); // Divide by 2 for each octave down (shift right)
         end 
-
+        current_frequency = frequency; // for display
         // If octave_shift is 0 then this block does nothing
     end
 
