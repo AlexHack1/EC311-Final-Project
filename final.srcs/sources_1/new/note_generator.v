@@ -27,6 +27,11 @@ module note_generator #(
     reg [31:0] frequency; // Frequency for the note
     reg [2:0] octave_reg = 3'd4; // Octave count (starting at middle C)
     reg [7:0] sine_index = 0;
+    
+    wire [5:0] sine_value;
+    wire [5:0] triangle_value;
+    
+    
     //wave lut
    wave_lut (.sine_input(sine_index),
    .triangle_input(sine_index),

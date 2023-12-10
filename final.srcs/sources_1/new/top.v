@@ -50,7 +50,7 @@ module top(
 
     /// KEYBOARD STUFF /// 
     always @ (posedge key_flag) begin //keybinds
-        case(keycode[7:0]) // only need to look at 16 bits of keycode
+        case(keycode[7:0]) // only need to look at 8 bits of keycode
         
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
