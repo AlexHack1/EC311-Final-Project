@@ -51,7 +51,7 @@ module note_generator #(
             sine_wave_counter <= 0;
         end else begin
             sine_wave_counter <= sine_wave_counter + 1;
-            if (sine_wave_counter >= 10 )  // modify 100 to change speed of sine wave
+            if (sine_wave_counter >= 5 )  // modify 100 to change speed of sine wave
             begin 
                 sine_wave_counter <= 0;
                 sine_index <= (sine_index + 1) % 256; // 256 is the size of the sine LUT
@@ -112,7 +112,7 @@ module note_generator #(
     
     
     
-    // new clock divider    
+    // new clock divider - unused
     reg divided_clk = 0;
     reg [31:0] clk_divider_counter = 0;
     
@@ -154,11 +154,11 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*1000) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end
                 2'b10: begin
                     //triangle duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*1000) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
                     end
                 default: begin
                     // Default to 50% Duty Cycle

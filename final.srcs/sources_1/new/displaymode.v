@@ -31,6 +31,7 @@ module display_mode(
 
     reg [7:0] animation_counter = 0; // Counter for pwm animation
     
+    reg [3:0] hundred_thousands;
     reg [3:0] ten_thousands;
     reg [3:0] thousands;
     reg [3:0] hundreds;
@@ -114,11 +115,11 @@ module display_mode(
 
                     if (delay_counter == 0) begin
                     case (pwm_type)
-                        2'b000: // square wave
+                        3'b000: // square wave
                             animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
-                        2'b001: // sine wave
+                        3'b001: // sine wave
                             animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
-                        2'b010: // triangle wave
+                        3'b010: // triangle wave
                             animation_counter <= (animation_counter + 1) % 2; // 2 steps for triangle wave
                         default: // Other cases
                             animation_counter <= animation_counter;
@@ -127,7 +128,7 @@ module display_mode(
                 
                 // Choose animation based on pwm_type
                 case (pwm_type)
-                    00: begin // square wave -_-_
+                    4'b0000: begin // square wave -_-_
                         case (animation_counter)
                             0: begin
                                 val_TBD7 = SYM_UNDERSCORE;
@@ -143,7 +144,7 @@ module display_mode(
                             end
                         endcase
                     end
-                    01: begin // sine wave _-~-_-~-_
+                    4'b0001: begin // sine wave _-~-_-~-_
                         case (animation_counter)
                             0: begin
                                 val_TBD7 = SYM_UNDERSCORE;
@@ -169,8 +170,9 @@ module display_mode(
                                 val_TBD5 = SYM_DASH;
                                 val_TBD4 = SYM_TOP;
                             end
-                        endcase end
-                    10: begin // triangle wave
+                        endcase
+                    end
+                    4'b0010: begin // triangle wave
                         case (animation_counter)
                             0: begin
                                 val_TBD7 = triangle_0;
@@ -202,6 +204,8 @@ module display_mode(
             3'b001: begin // Mode 1: Display frequency
 
                 // Division and modulo operations to extract each digit for decimal display
+                // THE REGS ARE NAMED WRONG HERE 
+                hundred_thousands = (frequency / 100000) % 10;
                 ten_thousands = (frequency / 10000) % 10;
                 thousands = (frequency / 1000) % 10;
                 hundreds = (frequency / 100) % 10;
@@ -211,7 +215,7 @@ module display_mode(
                 hundredths = (frequency / 1000) % 10;
 
                 // Mapping each digit to the display values
-                val_TBD0 <= 6'hF;
+               /* val_TBD0 <= 6'hF;
                 val_TBD1 <= {1'b0, 1'b0, ten_thousands};
                 val_TBD2 <= {1'b0, 1'b0, thousands};
                 val_TBD3 <= {1'b0, 1'b0, hundreds};
@@ -219,6 +223,15 @@ module display_mode(
                 val_TBD5 <= {1'b1, 1'b0, ones}; // 1'b1 is decimal point
                 val_TBD6 <= {1'b0, 1'b0, tenths};
                 val_TBD7 <= {1'b0, 1'b0, hundredths};
+                */
+                val_TBD0 <= 6'hF;
+                val_TBD1 <= 5'b10000; // disp nothing
+                val_TBD2 <= {1'b0, 1'b0, hundred_thousands};
+                val_TBD3 <= {1'b0, 1'b0, ten_thousands};
+                val_TBD4 <= {1'b0, 1'b0, thousands};
+                val_TBD5 <= {1'b1, 1'b0, hundreds}; // 1'b1 is decimal point
+                val_TBD6 <= {1'b0, 1'b0, tens};
+                val_TBD7 <= {1'b0, 1'b0, ones};
 
             end
             

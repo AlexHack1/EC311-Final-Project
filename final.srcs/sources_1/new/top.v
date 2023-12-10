@@ -118,12 +118,12 @@ module top(
             'h3D: octave = 70; // num 7 --> octave 7
             
             // modes
-            'h1a: disp_mode = 00; // z --> mode 00 (show note and octave)
-            'h22: disp_mode = 01; // x --> mode 01 (show frequency)
+            'h1a: disp_mode = 4'b00; // z --> mode 00 (show note and octave)
+            'h22: disp_mode = 4'b01; // x --> mode 01 (show frequency)
             
-            'h32: wave_type = 00; // b --> 50% duty cycle (sqaure)
-            'h31: wave_type = 01; // n --> sine wave
-            'h3A: wave_type = 10; // m --> triable
+            'h32: wave_type = 4'b00; // b --> 50% duty cycle (sqaure)
+            'h31: wave_type = 4'b01; // n --> sine wave
+            'h3A: wave_type = 4'b10; // m --> triable
                        
             default:;
         endcase
