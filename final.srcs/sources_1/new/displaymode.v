@@ -20,9 +20,14 @@ module display_mode(
     output reg [5:0] val_TBD7  // disp7 (right digit)
 );
     parameter NOTHING = 5'b10000;
+    parameter SYM_DASH= 5'b10010;
+    parameter SYM_UNDERSCORE = 5'b10100;
+    parameter SYM_TOP = 5'b10101;
 
     reg [4:0] note_dig1; // note digit 1 
     reg [4:0] note_dig2; // note digit 2
+
+    reg [7:0] animation_counter = 0; // Counter for pwm animation
 
     always @(posedge clk) begin
         case (mode)
@@ -90,13 +95,72 @@ module display_mode(
                 val_TBD2 <= 5'b10001; // degree symbol (meaning octave)
                 val_TBD3 <= {1'b0, octave}; // octave number
 
+
+
+                // Increment animation counter for pwm type
+                if (pwm_type == 2'b01) begin // sine wave
+                    animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
+                end else if (pwm_type == 2'b00) begin // square wave 
+                    animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
+                end
+                
+                // Choose animation based on pwm_type
+                case (pwm_type)
+                    00: begin // square wave -_-_
+                        case (animation_counter)
+                            0: begin
+                                val_TBD7 = SYM_UNDERSCORE;
+                                val_TBD6 = SYM_DASH;
+                                val_TBD5 = SYM_UNDERSCORE;
+                                val_TBD4 = SYM_DASH;
+                            end
+                            1: begin
+                                val_TBD7 = SYM_DASH;
+                                val_TBD6 = SYM_UNDERSCORE;
+                                val_TBD5 = SYM_DASH;
+                                val_TBD4 = SYM_UNDERSCORE;
+                            end
+                        endcase
+                    end
+                    01: begin // sine wave _-~-_-~-_
+                        case (animation_counter)
+                            0: begin
+                                val_TBD7 = SYM_UNDERSCORE;
+                                val_TBD6 = SYM_DASH;
+                                val_TBD5 = SYM_TOP;
+                                val_TBD4 = SYM_DASH;
+                            end
+                            1: begin
+                                val_TBD7 = SYM_DASH;
+                                val_TBD6 = SYM_TOP;
+                                val_TBD5 = SYM_DASH;
+                                val_TBD4 = SYM_UNDERSCORE;
+                            end
+                            2: begin
+                                val_TBD7 = SYM_TOP;
+                                val_TBD6 = SYM_DASH;
+                                val_TBD5 = SYM_UNDERSCORE;
+                                val_TBD4 = SYM_DASH;
+                            end
+                            3: begin
+                                val_TBD7 = SYM_DASH;
+                                val_TBD6 = SYM_UNDERSCORE;
+                                val_TBD5 = SYM_DASH;
+                                val_TBD4 = SYM_TOP;
+                            end
+                        endcase
+                    end
+                endcase
+
+
+
                 // blanks
-                val_TBD4 <= NOTHING;
-                val_TBD5 <= NOTHING;
+                //val_TBD4 <= NOTHING;
+                //val_TBD5 <= NOTHING;
                 
                 // display wave mode (square or sine or whatever)
-                val_TBD6 <= {1'b0, pwm_type[3:2]}; // Display the upper 2 bits of pwm_type
-                val_TBD7 <= {1'b0, pwm_type[1:0]}; // Display the lower 2 bits of pwm_type
+                //val_TBD6 <= {1'b0, pwm_type[3:2]}; // Display the upper 2 bits of pwm_type
+                //val_TBD7 <= {1'b0, pwm_type[1:0]}; // Display the lower 2 bits of pwm_type
             end
             
             
