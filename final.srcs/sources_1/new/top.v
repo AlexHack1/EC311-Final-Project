@@ -17,10 +17,13 @@ module top(
 );
 
     reg [3:0] note = 0;          // Note storage
-    reg [2:0] octave = 4; //octave storage
+    reg [7:0] octave = 40; //octave storage
     wire clk_100kHz;
     wire clk_500Hz;
     wire [27:0] current_freq;
+    wire [3:0] octave_for_display;
+    assign octave_for_display = octave / 4'd10;
+    
     
     wire deb_next_note;
     
@@ -54,8 +57,8 @@ module top(
         
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
-                note = 11;
-                octave = octave-1;
+                note <= 11;
+                octave <= octave-5;
             end 
             'h1B:  note = 0;//s  --> C
             'h23:  note = 2;//d --> D
@@ -65,8 +68,8 @@ module top(
             'h3B:  note = 9;//j --> A
             'h42:  note = 11;//k --> B
             'h4B:  begin // l --> increment octave and set note to c
-                note = 0;
-                octave = octave+1;
+                note <= 0;
+                octave <= octave+5;
             end 
             'h24: note = 1;// e --> C#/Dflat
             'h2D: note = 3;//r --> D#/Ef
@@ -74,21 +77,22 @@ module top(
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
 
-            'h6B: begin //numpad 7 go up by 3 tones (minor 3rd)
+
+            'h6B: begin //numpad 4 go up by 3 tones (minor 3rd)
                 if (note <9)
                     note = note +3;
                 else begin
-                    octave = octave +1;
+                    octave = octave + 5;
                     note = note-8; // in case of overflow, go down by 8 and increment octave
                     end
 
              end//numpad 7 go up by 3 tones (minor 3rd)        
 
-            'h73: begin //numpad 8 --> up by 4 tones (maj 3rd)
+            'h73: begin //numpad 5 --> up by 4 tones (maj 3rd)
                 if (note < 8)
                     note = note +4;
                 else begin
-                    octave = octave +1;
+                    octave = octave + 5;
                     note = note-7; // octave up by 1 note -7 same as note+4 if overflow
                     end
               end
@@ -97,30 +101,30 @@ module top(
                 if (note < 5)
                     note = note +7;
                 else begin
-                    octave = octave +1;
+                    octave = octave + 5;
                     note = note-4;
                     end
               end
-               // numpad 9 --> up by 7 tones (5th)
+       
 
 
             
             //octaves
-            'h16: octave = 1; // num 1 --> octave 1
-            'h1E: octave = 2;
-            'h26: octave = 3;
-            'h25: octave = 4; // num 4 --> octave 4 (default)
-            'h2E: octave = 5;
-            'h36: octave = 6;
-            'h3D: octave = 7; // num 7 --> octave 7
+            'h16: octave = 10; // num 1 --> octave 1
+            'h1E: octave = 20;
+            'h26: octave = 30;
+            'h25: octave = 40; // num 4 --> octave 4 (default)
+            'h2E: octave = 50;
+            'h36: octave = 60;
+            'h3D: octave = 70; // num 7 --> octave 7
             
             // modes
-            'h1a: disp_mode = 00; // z --> mode 00 (show note and octave)
-            'h22: disp_mode = 01; // x --> mode 01 (show frequency)
+            'h1a: disp_mode = 4'b00; // z --> mode 00 (show note and octave)
+            'h22: disp_mode = 4'b01; // x --> mode 01 (show frequency)
             
-            'h32: wave_type = 00; // b --> 50% duty cycle (sqaure)
-            'h31: wave_type = 01; // n --> sine wave
-            'h3A: wave_type = 10; // m --> triable
+            'h32: wave_type = 4'b00; // b --> 50% duty cycle (sqaure)
+            'h31: wave_type = 4'b01; // n --> sine wave
+            'h3A: wave_type = 4'b10; // m --> triable
                        
             default:;
         endcase
@@ -170,7 +174,7 @@ module top(
         .clk(clk_500Hz),
         .mode(disp_mode),
         .note(note),
-        .octave(octave),
+        .octave(octave_for_display),
         .frequency(current_freq),
         .pwm_type(wave_type),
         .val_TBD0(disp0),
@@ -183,20 +187,6 @@ module top(
         .val_TBD7(disp7)
     );
 
-//    // basic note incrementer for debug
-//    always @(posedge clk_100kHz) begin
-//        if (rst_button) begin
-//            note <= 0;
-//        end else if (deb_next_note) begin
-//            if (note < 11) begin
-//                note <= note + 1;
-//            end else begin
-//                note <= 0;
-//                // Handle octave change here if desired
-//            end
-//        end
-//    end
-    
     
     // 7 segment display using 5 bit BCD 
     // each digit is in correct order left to right dont move them

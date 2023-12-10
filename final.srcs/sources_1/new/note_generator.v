@@ -13,7 +13,7 @@ module note_generator #(
     input wire [3:0] note, // Note input (0-11 for C-B)
 
     input wire [3:0] duty_cycle_type, // 00 is 50% 01 is sine...
-    input [2:0] octave_in,
+    input [7:0] octave_in,
 
     output reg pwm_out, // PWM output - can be tied directly to a speaker
     output wire pwm_led, //for testing
@@ -25,7 +25,7 @@ module note_generator #(
     //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
     reg [31:0] counter = 0;
     reg [31:0] frequency; // Frequency for the note
-    reg [2:0] octave_reg = 3'd4; // Octave count (starting at middle C)
+    //reg [2:0] octave_reg = 3'd4; // Octave count (starting at middle C)
     reg [7:0] sine_index = 0;
     
     wire [5:0] sine_value;
@@ -89,18 +89,49 @@ module note_generator #(
         end
         case(octave_in)
             0: frequency = base_freqs[note]/16;
-            1: frequency = base_freqs[note]/8;
-            2: frequency = base_freqs[note]/4;
-            3: frequency = base_freqs[note]/2;
-            4: frequency = base_freqs[note];
-            5: frequency = base_freqs[note]*2;
-            6: frequency = base_freqs[note]*4;
-            7: frequency = base_freqs[note]*8;
+            5: frequency = base_freqs[note]/8;
+            10: frequency = base_freqs[note]/8;
+            15: frequency = base_freqs[note]/4;
+            20: frequency = base_freqs[note]/4;
+            25: frequency = base_freqs[note]/2;
+            30: frequency = base_freqs[note]/2;
+            35: frequency = base_freqs[note];
+            40: frequency = base_freqs[note];
+            45: frequency = base_freqs[note]*2;
+            50: frequency = base_freqs[note]*2;
+            55: frequency = base_freqs[note]*4;
+            60: frequency = base_freqs[note]*4;
+            65: frequency = base_freqs[note] * 8;
+            70: frequency = base_freqs[note]*8;
+            75: frequency = base_freqs[note] * 8;
             default:;
         endcase
          current_frequency = frequency;
     end
 
+    
+    
+    
+    // new clock divider - unused
+    reg divided_clk = 0;
+    reg [31:0] clk_divider_counter = 0;
+    
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            clk_divider_counter <= 0;
+            divided_clk <= 0;
+        end else begin
+            // Increment the counter each clock cycle
+            clk_divider_counter <= clk_divider_counter + 1;
+    
+            // Change the divided clock value when counter reaches a threshold
+            // Adjust the '50000' value to change the clock division factor
+            if (clk_divider_counter >= 5000) begin
+                clk_divider_counter <= 0;
+                divided_clk <= ~divided_clk;
+            end
+        end
+    end
 
     // PWM Output Block
     always @(posedge clk or posedge rst) begin
@@ -123,11 +154,11 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end
                 2'b10: begin
                     //triangle duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
                     end
                 default: begin
                     // Default to 50% Duty Cycle
