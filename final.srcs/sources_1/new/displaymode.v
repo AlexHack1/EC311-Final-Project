@@ -111,14 +111,18 @@ module display_mode(
 
                 
                 // Only increment animation counter when delay counter resets
-                if (delay_counter == 0) begin
-                    if (pwm_type == 2'b01) begin // sine wave
-                        animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
-                    end else if (pwm_type == 2'b00) begin // square wave 
-                        animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
-                    end else if (pwm_type == 2'b10) begin // triangle wave
-                        animation_counter <= (animation_counter + 1) % 2; // 8 steps for triangle wave
-                    end
+
+                    if (delay_counter == 0) begin
+                    case (pwm_type)
+                        2'b00: // square wave
+                            animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
+                        2'b01: // sine wave
+                            animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
+                        2'b10: // triangle wave
+                            animation_counter <= (animation_counter + 1) % 2; // 2 steps for triangle wave
+                        default: // Other cases
+                            animation_counter <= animation_counter;
+                    endcase
                 end
                 
                 // Choose animation based on pwm_type
