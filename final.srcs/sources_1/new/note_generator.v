@@ -32,7 +32,10 @@ module note_generator #(
     reg [7:0] sine_lut[SINE_LUT_SIZE-1:0];
     // Sine Wave Generator
     reg [7:0] sine_index = 0;
-    wire [7:0] sine_value = sine_lut[sine_index];
+    wire [7:0] sine_value;
+    
+    assign sine_value = sine_lut[sine_index];
+    
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             sine_index <= 0;
@@ -168,7 +171,7 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end  
                 default: begin
                     // Default to 50% Duty Cycle
