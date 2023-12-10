@@ -114,11 +114,11 @@ module display_mode(
 
                     if (delay_counter == 0) begin
                     case (pwm_type)
-                        2'b00: // square wave
+                        2'b000: // square wave
                             animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
-                        2'b01: // sine wave
+                        2'b001: // sine wave
                             animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
-                        2'b10: // triangle wave
+                        2'b010: // triangle wave
                             animation_counter <= (animation_counter + 1) % 2; // 2 steps for triangle wave
                         default: // Other cases
                             animation_counter <= animation_counter;
