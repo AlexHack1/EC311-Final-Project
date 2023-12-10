@@ -77,6 +77,8 @@ module segment_disp(
             5'b10011: seg_map = LET_G;
             5'b10100: seg_map = SYM_UNDERSCORE;
             5'b10101: seg_map = SYM_TOP;
+            5'b10110: seg_map = triangle_0;
+            5'b10111: seg_map = triangle_1;
             default : seg_map = 8'b11111111;  //turns all off
         endcase
 
