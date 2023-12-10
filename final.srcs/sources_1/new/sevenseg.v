@@ -49,7 +49,7 @@ module segment_disp(
     parameter SYM_DEG = 7'b0011100;  // [] degree symbol
     parameter SYM_DASH= 7'b0111111;  // - negative symbol 
     parameter LET_G =   7'b1000010;  // G
-    parameter SYM_UNDERSCORE = 7'b1011111; // _ underscore symbol
+    parameter SYM_UNDERSCORE = 7'b1110111; // _ underscore symbol
     parameter SYM_TOP = 7'b1111110; // ~ top segment only
     always @(posedge clock_in) begin
         case(val_TBD[digit_counter][4:0])

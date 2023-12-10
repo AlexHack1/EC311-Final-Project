@@ -36,6 +36,8 @@ module display_mode(
     reg [3:0] ones;
     reg [3:0] tenths;
     reg [3:0] hundredths;
+    reg [7:0] delay_counter = 0;
+
 
     always @(posedge clk) begin
         case (mode)
@@ -103,13 +105,16 @@ module display_mode(
                 val_TBD2 <= 5'b10001; // degree symbol (meaning octave)
                 val_TBD3 <= {1'b0, octave}; // octave number
 
+                delay_counter <= (delay_counter + 1) % 125;
 
-
-                // Increment animation counter for pwm type
-                if (pwm_type == 2'b01) begin // sine wave
-                    animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
-                end else if (pwm_type == 2'b00) begin // square wave 
-                    animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
+                
+                // Only increment animation counter when delay counter resets
+                if (delay_counter == 0) begin
+                    if (pwm_type == 2'b01) begin // sine wave
+                        animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
+                    end else if (pwm_type == 2'b00) begin // square wave 
+                        animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
+                    end
                 end
                 
                 // Choose animation based on pwm_type
@@ -159,7 +164,6 @@ module display_mode(
                         endcase
                     end
                 endcase
-
 
 
                 // blanks
