@@ -28,6 +28,14 @@ module display_mode(
     reg [4:0] note_dig2; // note digit 2
 
     reg [7:0] animation_counter = 0; // Counter for pwm animation
+    
+    reg [3:0] ten_thousands;
+    reg [3:0] thousands;
+    reg [3:0] hundreds;
+    reg [3:0] tens;
+    reg [3:0] ones;
+    reg [3:0] tenths;
+    reg [3:0] hundredths;
 
     always @(posedge clk) begin
         case (mode)
@@ -167,13 +175,13 @@ module display_mode(
             3'b001: begin // Mode 1: Display frequency
 
                 // Division and modulo operations to extract each digit for decimal display
-                reg [3:0] ten_thousands = (frequency / 10000) % 10;
-                reg [3:0] thousands = (frequency / 1000) % 10;
-                reg [3:0] hundreds = (frequency / 100) % 10;
-                reg [3:0] tens = (frequency / 10) % 10;
-                reg [3:0] ones = frequency % 10;
-                reg [3:0] tenths = (frequency / 100) % 10;
-                reg [3:0] hundredths = (frequency / 1000) % 10;
+                ten_thousands = (frequency / 10000) % 10;
+                thousands = (frequency / 1000) % 10;
+                hundreds = (frequency / 100) % 10;
+                tens = (frequency / 10) % 10;
+                ones = frequency % 10;
+                tenths = (frequency / 100) % 10;
+                hundredths = (frequency / 1000) % 10;
 
                 // Mapping each digit to the display values
                 val_TBD0 <= 6'hF;
