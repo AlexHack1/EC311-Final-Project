@@ -6,8 +6,8 @@ module wave_lut(
    output wire [5:0] sine_output,
    output wire [5:0] triangle_output
     );
-    reg[255:0] sine_lut;
-    reg[255:0] triangle_lut;
+    integer sine_lut [255:0];
+    integer triangle_lut [255:0];
     assign sine_output = sine_lut[sine_input];
     assign triangle_output = triangle_lut[triangle_input];
     initial begin
