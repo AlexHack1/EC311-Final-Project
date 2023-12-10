@@ -17,7 +17,7 @@ module note_generator #(
 
     output reg pwm_out, // PWM output - can be tied directly to a speaker
     output wire pwm_led, //for testing
-    output reg [31:0] current_frequency // Output current frequency
+    output reg [27:0] current_frequency // Output current frequency
 );
 
     assign pwm_led = pwm_out;
@@ -51,7 +51,7 @@ module note_generator #(
             sine_wave_counter <= 0;
         end else begin
             sine_wave_counter <= sine_wave_counter + 1;
-            if (sine_wave_counter >= 100 )  // modify 100 to change speed of sine wave
+            if (sine_wave_counter >= 10 )  // modify 100 to change speed of sine wave
             begin 
                 sine_wave_counter <= 0;
                 sine_index <= (sine_index + 1) % 256; // 256 is the size of the sine LUT
@@ -127,7 +127,7 @@ module note_generator #(
                     end
                 2'b10: begin
                     //triangle duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) / triangle_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
                     end
                 default: begin
                     // Default to 50% Duty Cycle
