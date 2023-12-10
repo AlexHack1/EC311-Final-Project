@@ -30,6 +30,7 @@ module note_generator #(
     
     wire [5:0] sine_value;
     wire [5:0] triangle_value;
+    
     //wave lut
     wave_lut wavelut (
         .sine_input(sine_index),
