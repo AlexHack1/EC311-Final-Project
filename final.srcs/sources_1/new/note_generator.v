@@ -70,11 +70,11 @@ module note_generator #(
 
     // octave adjustment based on octave_in
     always @ (posedge clk) begin
-        octave_reg <= octave_in;
+        //octave_reg <= octave_in;
         if (rst) begin // Reset to middle C
                 frequency = base_freqs[note];
         end
-        case(octave_reg)
+        case(octave_in)
             0: frequency = base_freqs[note]/16;
             1: frequency = base_freqs[note]/8;
             2: frequency = base_freqs[note]/4;
