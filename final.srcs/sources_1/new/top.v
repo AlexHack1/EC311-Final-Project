@@ -132,7 +132,7 @@ module top(
     
     
    
-    wire [4:0] disp0, disp1, disp2, disp3, disp4, disp5, disp6, disp7;
+    wire [5:0] disp0, disp1, disp2, disp3, disp4, disp5, disp6, disp7;
     display_mode my_display_mode (
         .clk(clk_500Hz),
         .mode(disp_mode),

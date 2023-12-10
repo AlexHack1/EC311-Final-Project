@@ -3,14 +3,14 @@
 module segment_disp(
     
     //input using 7 inputs rather than array because array wont work
-    input [4:0] val_TBD0, // display 0
-    input [4:0] val_TBD1, // display 1
-    input [4:0] val_TBD2, // display 2
-    input [4:0] val_TBD3, // display 3
-    input [4:0] val_TBD4, // display 4
-    input [4:0] val_TBD5, // display 5
-    input [4:0] val_TBD6, // display 6
-    input [4:0] val_TBD7, // display 7
+    input [5:0] val_TBD0, // display 0
+    input [5:0] val_TBD1, // display 1
+    input [5:0] val_TBD2, // display 2
+    input [5:0] val_TBD3, // display 3
+    input [5:0] val_TBD4, // display 4
+    input [5:0] val_TBD5, // display 5
+    input [5:0] val_TBD6, // display 6
+    input [5:0] val_TBD7, // display 7
     input clock_in,
 	input reset_in,
 	//input [3:0] count_in,
@@ -19,7 +19,7 @@ module segment_disp(
     );
     
     
-    reg [4:0] val_TBD[7:0]; //internal array of whatever we want to display
+    reg [5:0] val_TBD[7:0]; //internal array of whatever we want to display
     reg [7:0] seg_map;
     reg [2:0] digit_counter;  //counts 0-7 for selecting digit        
     
@@ -28,29 +28,29 @@ module segment_disp(
     //   G
     // E   C
     //   D    H
-    // 7 SEGMENT MAPPING //HGFEDCBA// 1 is off 0 is on // MSB (H) is the decimal point
-    parameter ZERO =    8'b11000000;  // 0
-    parameter ONE =     8'b11111001;  // 1
-    parameter TWO =     8'b10100100;  // 2
-    parameter THREE =   8'b10110000;  // 3
-    parameter FOUR =    8'b10011001;  // 4
-    parameter FIVE =    8'b10010010;  // 5
-    parameter SIX =     8'b10000010;  // 6
-    parameter SEVEN =   8'b11111000;  // 7
-    parameter EIGHT =   8'b10000000;  // 8
-    parameter NINE =    8'b10010000;  // 9
-    parameter LET_A =   8'b10001000;  // A
-    parameter LET_B =   8'b10000011;  // B
-    parameter LET_C =   8'b11000110;  // C
-    parameter LET_D =   8'b10100001;  // D
-    parameter LET_E =   8'b10000110;  // E
-    parameter LET_F =   8'b10001110;  // F
-    parameter NOTHING = 8'b11111111;  // disp nothing 
-    parameter SYM_DEG = 8'b10011100;  // [] degree symbol
-    parameter SYM_DASH= 8'b10111111;  // - negative symbol 
-    parameter LET_G =   8'b11000010;  // G
+    // 7 SEGMENT MAPPING //GFEDCBA// 1 is off 0 is on // MSB (H) is the decimal point
+    parameter ZERO =    7'b1000000;  // 0
+    parameter ONE =     7'b1111001;  // 1
+    parameter TWO =     7'b0100100;  // 2
+    parameter THREE =   7'b0110000;  // 3
+    parameter FOUR =    7'b0011001;  // 4
+    parameter FIVE =    7'b0010010;  // 5
+    parameter SIX =     7'b0000010;  // 6
+    parameter SEVEN =   7'b1111000;  // 7
+    parameter EIGHT =   7'b0000000;  // 8
+    parameter NINE =    7'b0010000;  // 9
+    parameter LET_A =   7'b0001000;  // A
+    parameter LET_B =   7'b0000011;  // B
+    parameter LET_C =   7'b1000110;  // C
+    parameter LET_D =   7'b0100001;  // D
+    parameter LET_E =   7'b0000110;  // E
+    parameter LET_F =   7'b0001110;  // F
+    parameter NOTHING = 7'b1111111;  // disp nothing 
+    parameter SYM_DEG = 7'b0011100;  // [] degree symbol
+    parameter SYM_DASH= 7'b0111111;  // - negative symbol 
+    parameter LET_G =   7'b1000010;  // G
     always @(posedge clock_in) begin
-        case(val_TBD[digit_counter])
+        case(val_TBD[digit_counter][4:0])
             5'h0: seg_map = ZERO;       
             5'h1: seg_map = ONE;       
             5'h2: seg_map = TWO;
@@ -73,6 +73,13 @@ module segment_disp(
             5'b10011: seg_map = LET_G;
             default : seg_map = 8'b11111111;  //turns all off
         endcase
+
+        // assign the bit 8 (H) to the decimal point
+        if (val_TBD[digit_counter][5] == 1'b0) begin
+            seg_map[7] <= 1'b1; // Clear the decimal point for this digit
+        end else begin
+            seg_map[7] <= 1'b0; // Show the decimal point for this digit
+        end
         
         //we assign the inputs to an internal array which is much easier to iterate thru
         val_TBD[0] = val_TBD0;

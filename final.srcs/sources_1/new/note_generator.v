@@ -168,7 +168,7 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100) / (frequency) * sine_value / 100)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end  
                 default: begin
                     // Default to 50% Duty Cycle
