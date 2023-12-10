@@ -47,13 +47,14 @@ module top(
     .keycodeout(keycode[31:0]),
     .changed(key_flag)
     );
-    
+
+    /// KEYBOARD STUFF /// 
     always @ (posedge key_flag) begin //keybinds
         case(keycode[7:0]) // only need to look at 16 bits of keycode
         
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
-                //note = 11;
+                note = 11;
                 octave = octave-1;
             end 
             'h1B:  note = 0;//s  --> C
@@ -63,8 +64,8 @@ module top(
             'h33:  note = 7;//h --> G
             'h3B:  note = 9;//j --> A
             'h42:  note = 11;//k --> B
-            'h4b:  begin // l --> increment octave and set note to c
-                //note = 0;
+            'h4B:  begin // l --> increment octave and set note to c
+                note = 0;
                 octave = octave+1;
             end 
             'h24: note = 1;// e --> C#/Dflat
@@ -72,6 +73,37 @@ module top(
             'h35: note = 6;//y --> F#/Gf
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
+
+            'h6B: begin //numpad 7 go up by 3 tones (minor 3rd)
+                if (note <9)
+                    note = note +3;
+                else begin
+                    octave = octave +1;
+                    note = note-8; // in case of overflow, go down by 8 and increment octave
+                    end
+
+             end//numpad 7 go up by 3 tones (minor 3rd)        
+
+            'h73: begin //numpad 8 --> up by 4 tones (maj 3rd)
+                if (note < 8)
+                    note = note +4;
+                else begin
+                    octave = octave +1;
+                    note = note-7; // octave up by 1 note -7 same as note+4 if overflow
+                    end
+              end
+
+            'h74: begin //numpad 9 --> up by 7 tones (maj 5th)
+                if (note < 5)
+                    note = note +7;
+                else begin
+                    octave = octave +1;
+                    note = note-4;
+                    end
+              end
+               // numpad 9 --> up by 7 tones (5th)
+
+
             
             //octaves
             'h16: octave = 1; // num 1 --> octave 1

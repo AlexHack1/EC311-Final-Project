@@ -105,7 +105,7 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end
                 2'b10: begin
                     //triangle duty cycle
