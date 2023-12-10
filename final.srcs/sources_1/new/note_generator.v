@@ -31,18 +31,31 @@ module note_generator #(
     wire [5:0] sine_value;
     wire [5:0] triangle_value;
     
-    
+
     //wave lut
-   wave_lut (.sine_input(sine_index),
-   .triangle_input(sine_index),
-   .sine_output(sine_value),
-   .triangle_output(triangle_value));
-    // Sine Wave Generator
+    wave_lut wavelut (
+        .sine_input(sine_index),
+        .triangle_input(sine_index),
+        .sine_output(sine_value),
+        .triangle_output(triangle_value)
+    );
+
+    // add a counter to slow the sine_index counter
+    
+    reg [31:0] sine_wave_counter = 0; // New counter for controlling sine wave speed
+
+    // Sine Wave Generator with controlled speed
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             sine_index <= 0;
+            sine_wave_counter <= 0;
         end else begin
-            sine_index <= (sine_index + 1) % SINE_LUT_SIZE;
+            sine_wave_counter <= sine_wave_counter + 1;
+            if (sine_wave_counter >= 100 )  // modify 100 to change speed of sine wave
+            begin 
+                sine_wave_counter <= 0;
+                sine_index <= (sine_index + 1) % 256; // 256 is the size of the sine LUT
+            end
         end
     end
     
@@ -110,7 +123,7 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY*100*100) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
                     end
                 2'b10: begin
                     //triangle duty cycle
