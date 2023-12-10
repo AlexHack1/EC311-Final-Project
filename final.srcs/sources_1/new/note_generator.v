@@ -31,6 +31,7 @@ module note_generator #(
     wire [5:0] sine_value;
     wire [5:0] triangle_value;
     
+
     //wave lut
     wave_lut wavelut (
         .sine_input(sine_index),
@@ -82,11 +83,11 @@ module note_generator #(
 
     // octave adjustment based on octave_in
     always @ (posedge clk) begin
-        octave_reg <= octave_in;
+        //octave_reg <= octave_in;
         if (rst) begin // Reset to middle C
                 frequency = base_freqs[note];
         end
-        case(octave_reg)
+        case(octave_in)
             0: frequency = base_freqs[note]/16;
             1: frequency = base_freqs[note]/8;
             2: frequency = base_freqs[note]/4;
