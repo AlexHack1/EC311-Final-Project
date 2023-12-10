@@ -51,7 +51,7 @@ module note_generator #(
             sine_wave_counter <= 0;
         end else begin
             sine_wave_counter <= sine_wave_counter + 1;
-            if (sine_wave_counter >= 5 )  // modify 100 to change speed of sine wave
+            if (sine_wave_counter >= 10 )  // modify 100 to change speed of sine wave
             begin 
                 sine_wave_counter <= 0;
                 sine_index <= (sine_index + 1) % 256; // 256 is the size of the sine LUT

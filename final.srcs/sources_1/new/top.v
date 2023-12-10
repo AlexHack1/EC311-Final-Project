@@ -77,6 +77,7 @@ module top(
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
 
+
             'h6B: begin //numpad 4 go up by 3 tones (minor 3rd)
                 if (note <9)
                     note = note +3;
@@ -186,20 +187,6 @@ module top(
         .val_TBD7(disp7)
     );
 
-//    // basic note incrementer for debug
-//    always @(posedge clk_100kHz) begin
-//        if (rst_button) begin
-//            note <= 0;
-//        end else if (deb_next_note) begin
-//            if (note < 11) begin
-//                note <= note + 1;
-//            end else begin
-//                note <= 0;
-//                // Handle octave change here if desired
-//            end
-//        end
-//    end
-    
     
     // 7 segment display using 5 bit BCD 
     // each digit is in correct order left to right dont move them
