@@ -51,6 +51,8 @@ module segment_disp(
     parameter LET_G =   7'b1000010;  // G
     parameter SYM_UNDERSCORE = 7'b1110111; // _ underscore symbol
     parameter SYM_TOP = 7'b1111110; // ~ top segment only
+    parameter triangle_0 = 7'b0011101; // triangle left side
+    parameter triangle_1 = 7'b0011011; // triangle right side
     always @(posedge clock_in) begin
         case(val_TBD[digit_counter][4:0])
             5'h0: seg_map = ZERO;       

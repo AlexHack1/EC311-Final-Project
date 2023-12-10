@@ -23,6 +23,8 @@ module display_mode(
     parameter SYM_DASH= 5'b10010;
     parameter SYM_UNDERSCORE = 5'b10100;
     parameter SYM_TOP = 5'b10101;
+    parameter triangle_0 = 5'b10110;
+    parameter triangle_1 = 5'b10111;
 
     reg [4:0] note_dig1; // note digit 1 
     reg [4:0] note_dig2; // note digit 2
@@ -114,6 +116,8 @@ module display_mode(
                         animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
                     end else if (pwm_type == 2'b00) begin // square wave 
                         animation_counter <= (animation_counter + 1) % 2; // 2 steps for square wave
+                    end else if (pwm_type == 2'b10) begin // triangle wave
+                        animation_counter <= (animation_counter + 1) % 2; // 8 steps for triangle wave
                     end
                 end
                 
@@ -160,6 +164,21 @@ module display_mode(
                                 val_TBD6 = SYM_UNDERSCORE;
                                 val_TBD5 = SYM_DASH;
                                 val_TBD4 = SYM_TOP;
+                            end
+                        endcase end
+                    10: begin // triangle wave
+                        case (animation_counter)
+                            0: begin
+                                val_TBD7 = triangle_0;
+                                val_TBD6 = triangle_1;
+                                val_TBD5 = triangle_0;
+                                val_TBD4 = triangle_1;
+                            end
+                            1: begin
+                                val_TBD7 = triangle_1;
+                                val_TBD6 = triangle_0;
+                                val_TBD5 = triangle_1;
+                                val_TBD4 = triangle_0;
                             end
                         endcase
                     end

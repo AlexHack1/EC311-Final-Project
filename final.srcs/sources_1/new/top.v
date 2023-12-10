@@ -88,6 +88,7 @@ module top(
             
             'h32: wave_type = 00; // b --> 50% duty cycle (sqaure)
             'h31: wave_type = 01; // n --> sine wave
+            'h3A: wave_type = 10; // m --> triable
                        
             default:;
         endcase
