@@ -40,27 +40,27 @@ module recording_module(
         current_time <= current_time + 1;
     end
 
-    // playback
+    // playback logic
     always @(posedge clk) begin
-    if (playback) begin
-        // index = 0 means we are starting playback
-        if (playback_index == 0) begin
-            playback_time <= 0; // Reset playback time
+        if (playback) begin
+            // Starting playback
+            if (playback_index == 0) begin
+                playback_time <= 0; // Reset playback time
+            end
+            playback_time <= playback_time + 1;
+
+            // Playing back a note
+            if (playback_index < i && playback_time >= timestamp_log[playback_index]) begin
+                playback_note <= note_log[playback_index];
+                playback_octave <= octave_log[playback_index];
+                playback_index <= playback_index + 1;
+            end
+        end else begin
+            // Reset when playback stops or finishes
+            playback_index <= 0;
+            playback_time <= 0;
         end
-
-        // Increment playback time by 1 every clock cycle (500hz)
-        playback_time <= playback_time + 1;
-
-        // Check if current playback time matches the timestamp for the next note
-        if (playback_index < i && playback_time >= timestamp_log[playback_index]) begin // If it does
-            playback_note <= note_log[playback_index];     // Play the note
-            playback_octave <= octave_log[playback_index]; // and  octave
-
-            playback_index <= playback_index + 1; // Move to the next note
-        end
-    end else begin
-        playback_index <= 0; // else move back to the beginning of the recording
     end
-end
+
 
 endmodule

@@ -13,7 +13,9 @@ module top(
     output [7:0] cathode_seg,   // 7-segment cathode outputs
     output [7:0] anode_seg,      // 7-segment anode outputs (8 bits since we include decimal point here)
     output wire AUD_PWM,         // Output to a speaker or an 
-    output wire led0        // for debug
+    output wire led0,        // for debug
+    output wire led1, // for in playback
+    output wire led2 // for recording
 );
 
     reg [3:0] note = 0;          // Note storage
@@ -24,7 +26,7 @@ module top(
     wire [27:0] current_freq;
     wire [3:0] octave_for_display;
     assign octave_for_display = octave / 4'd10;
-    
+   
     
     
     wire deb_next_note;
@@ -41,7 +43,7 @@ module top(
 
 
     // for recording and playback
-
+    /*
     reg start_recording = 0;
     reg stop_recording = 0;
     reg playback = 0;
@@ -53,6 +55,12 @@ module top(
         .clk_500hz(clk_500Hz), // Connect to your 500Hz clock
         .clk_50hz(clk_50hz)    // 50Hz output clock
     );
+    
+    // for debug
+    assign led1 = in_playback_mode;
+    assign led2 = start_recording;
+    */
+    
     
     //clk divider for PS2 Receiver
     always @(posedge(CLK100MHZ))begin
@@ -72,16 +80,16 @@ module top(
     always @ (posedge key_flag) begin //keybinds
 
         // enter playback mode
-        if (playback) begin
+        /* if (playback) begin
             in_playback_mode <= 1;
         end else if (stop_recording || start_recording) begin
             in_playback_mode <= 0;
-        end
+        end */
         // exit playback mode
-        if (keycode[7:0] == 'h4D && in_playback_mode) begin // p--> exit playback
+        /*if (keycode[7:0] == 'h4D && in_playback_mode) begin // p--> exit playback
             in_playback_mode <= 0;
             playback <= 0;
-        end
+        end */
 
         case(keycode[7:0]) // only need to look at 8 bits of keycode
 
@@ -109,38 +117,38 @@ module top(
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
 
-
+            //  NUMPAD //
+            /*
             'h6B: begin //numpad 4 go up by 3 tones (minor 3rd)
-                if (note <9)
-                    note <= note +3;
-                else begin
+                    note <= note + 3;
+                if (note > 8) begin
                     octave <= octave + 5;
-                    note <= note-8; // in case of overflow, go down by 8 and increment octave
-                    end
-
+                    note <= 12 - note;
+                end else begin
+                    note <= note + 3;
+                end
              end      
 
-            'h73: begin //numpad 5 --> up by 4 tones (maj 3rd)
-                if (note < 8)
-                    note <= note +4;
-                else begin
+            'h73: begin //numpad 5 --> major third go up by 4 tones
+                if (note > 7) begin
                     octave <= octave + 5;
-                    note <= note-7; // octave up by 1 note -7 same as note+4 if overflow
-                    end
+                    note = 12 - note; 
+                end else begin
+                    note <= note + 4;
+                end
+                    
               end
 
             'h74: begin //numpad 6 --> up by 7 tones (maj 5th)
-                if (note < 5)
-                    note <= note +7;
-                else begin
+                if (note > 4) begin
                     octave <= octave + 5;
-                    note <= note-4;
-                    end
+                    note <= 12 - note;
+                end else begin
+                    note <= note + 7;
+                end
               end
-       
+            */
 
-
-            
             //octaves
             'h16: octave = 10; // num 1 --> octave 1
             'h1E: octave = 20;
@@ -160,26 +168,27 @@ module top(
 
 
             // recording and playback keys
-            'h79: begin // + --> start recording
+            /*
+            'h5b: begin // ] --> start recording
                 start_recording <= 1;
                 stop_recording <= 0;
                 playback <= 0;
                 in_playback_mode <= 0;
             end
-            'h7B: begin // - --> stop recording
+            'h54: begin // [ --> stop recording
                 stop_recording <= 1;
                 start_recording <= 0;
                 playback <= 0;
                 in_playback_mode <= 0;
             end
-            'h70: begin // 0 --> start playback
+            'h44: begin // o --> start playback
                 playback <= 1;
                 start_recording <= 0;
                 stop_recording <= 0;
                 in_playback_mode <= 1;
             end
 
-            
+            */
                        
             default:;
         endcase
@@ -262,9 +271,8 @@ module top(
         .anode_out(anode_seg)
     );
 
-
     // recording
-
+    /*
     recording_module rec_module (
         .clk(clk_50hz),
         .start_recording(start_recording),
@@ -275,7 +283,6 @@ module top(
         .playback_note(playback_note),
         .playback_octave(playback_octave)
     );
-    
-
+    */
 
 endmodule

@@ -191,4 +191,36 @@ module note_generator #(
         end
     end
 
+
+
+    reg [31:0] sine_increment; // Increment value for sine_index
+    reg [31:0] sine_accumulator = 0; // Accumulator for fractional increments
+
+    // Calculate the Sine Wave Increment
+    always @(posedge clk) begin
+        if (rst) begin
+            sine_increment <= 0;
+            sine_accumulator <= 0;
+        end else begin
+            // Calculate the increment per clock cycle
+            // Adjust the formula based on your clock frequency and LUT size
+            sine_increment <= (frequency * SINE_LUT_SIZE) / CLK_FREQUENCY;
+        end
+    end
+
+
+    // PWM sine index adjustment for sine wave mode
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            sine_index <= 0;
+            sine_accumulator <= 0;
+        end else begin
+            sine_accumulator <= sine_accumulator + sine_increment;
+            if (sine_accumulator >= CLK_FREQUENCY) begin
+                sine_accumulator <= sine_accumulator - CLK_FREQUENCY;
+                sine_index <= (sine_index + 1) % SINE_LUT_SIZE;
+            end
+        end
+    end
+
 endmodule
