@@ -19,9 +19,9 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 6. Plug in either a speaker or headphones to the audio jack on the FPGA (should be located on the back right corner)
 7. Plug in a standard size QWERTY keyboard to the FPGA - the keyboard must have numpad and arrow keys
 8. Use the following key map to play the keyboard: INSERT KEYBOARD MAP THAT JAMES MADE
-- The home row (S, D, F, G, H, J, K) cooresponds to the white keys (C, D, E, F, G, A, B)
-- The row above (E, R, Y, U, I) cooresponds to the black keys (C#, D#, F#, G#, A#)
-- The number row keys (1, 2, 3, 4, 5, 6, 7, 8) are used to set the octave, A and L keys are used to decrement and increment the octave, respectively
+  - The home row (S, D, F, G, H, J, K) cooresponds to the white keys (C, D, E, F, G, A, B)
+  - The row above (E, R, Y, U, I) cooresponds to the black keys (C#, D#, F#, G#, A#)
+  - The number row keys (1, 2, 3, 4, 5, 6, 7, 8) are used to set the octave, A and L keys are used to decrement and increment the octave, respectively
 9. Happy playing!
 ## Code Structure
 - Block Diagram: https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing
