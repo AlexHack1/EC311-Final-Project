@@ -7,7 +7,7 @@
 ## Project Demo Video:
 - INSERT LINK HERE
 ## How To Run Project
-_ _Note: this project is only compatible with the Artix-7 xc7a100tcsg324-1 FPGA_ _  
+_Note: this project is only compatible with the Artix-7 xc7a100tcsg324-1 FPGA_  
 1. Clone this repo into some directory on your machine
 ```bash
 git clone https://github.com/AlexHack1/EC311-Final-Project.git
