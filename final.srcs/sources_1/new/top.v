@@ -37,7 +37,22 @@ module top(
     // display mode gets tied to 7seg disp
     reg [2:0] disp_mode = 00;
     reg [2:0] wave_type = 00;
-    
+
+
+
+    // for recording and playback
+
+    reg start_recording = 0;
+    reg stop_recording = 0;
+    reg playback = 0;
+    wire [3:0] playback_note;
+    wire [7:0] playback_octave;
+    reg in_playback_mode = 0; // 1 if in playback mode, 0 if not
+    wire clk_50hz;
+    clock_divider_50hz div50hz (
+        .clk_500hz(clk_500Hz), // Connect to your 500Hz clock
+        .clk_50hz(clk_50hz)    // 50Hz output clock
+    );
     
     //clk divider for PS2 Receiver
     always @(posedge(CLK100MHZ))begin
@@ -55,8 +70,21 @@ module top(
 
     /// KEYBOARD STUFF /// 
     always @ (posedge key_flag) begin //keybinds
+
+        // enter playback mode
+        if (playback) begin
+            in_playback_mode <= 1;
+        end else if (stop_recording || start_recording) begin
+            in_playback_mode <= 0;
+        end
+        // exit playback mode
+        if (keycode[7:0] == 'h4D && in_playback_mode) begin // p--> exit playback
+            in_playback_mode <= 0;
+            playback <= 0;
+        end
+
         case(keycode[7:0]) // only need to look at 8 bits of keycode
-        
+
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
                 note <= 11;
@@ -129,6 +157,29 @@ module top(
             'h32: wave_type = 4'b00; // b --> 50% duty cycle (sqaure)
             'h31: wave_type = 4'b01; // n --> sine wave
             'h3A: wave_type = 4'b10; // m --> triable
+
+
+            // recording and playback keys
+            'h79: begin // + --> start recording
+                start_recording <= 1;
+                stop_recording <= 0;
+                playback <= 0;
+                in_playback_mode <= 0;
+            end
+            'h7B: begin // - --> stop recording
+                stop_recording <= 1;
+                start_recording <= 0;
+                playback <= 0;
+                in_playback_mode <= 0;
+            end
+            'h70: begin // 0 --> start playback
+                playback <= 1;
+                start_recording <= 0;
+                stop_recording <= 0;
+                in_playback_mode <= 1;
+            end
+
+            
                        
             default:;
         endcase
@@ -157,8 +208,8 @@ module top(
     ) my_note_generator (
         .clk(clk_100kHz),
         .rst(rst_button),
-        .note(note),
-        .octave_in(octave),
+        .note(in_playback_mode ? playback_note : note), // if in playback mode, use playback_note otherwise play note pressed
+        .octave_in(in_playback_mode ? playback_octave : octave), // same for octave
         .duty_cycle_type(wave_type),
         .pwm_out(AUD_PWM),
         .pwm_led(led0),
@@ -210,6 +261,21 @@ module top(
         .cathode_out(cathode_seg),
         .anode_out(anode_seg)
     );
+
+
+    // recording
+
+    recording_module rec_module (
+        .clk(clk_50hz),
+        .start_recording(start_recording),
+        .stop_recording(stop_recording),
+        .playback(playback),
+        .note(note),
+        .octave(octave),
+        .playback_note(playback_note),
+        .playback_octave(playback_octave)
+    );
+    
 
 
 endmodule
