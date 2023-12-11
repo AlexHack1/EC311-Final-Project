@@ -118,7 +118,7 @@ module top(
                     note <= note-8; // in case of overflow, go down by 8 and increment octave
                     end
 
-             end//numpad 7 go up by 3 tones (minor 3rd)        
+             end      
 
             'h73: begin //numpad 5 --> up by 4 tones (maj 3rd)
                 if (note < 8)
@@ -129,7 +129,7 @@ module top(
                     end
               end
 
-            'h74: begin //numpad 9 --> up by 7 tones (maj 5th)
+            'h74: begin //numpad 6 --> up by 7 tones (maj 5th)
                 if (note < 5)
                     note <= note +7;
                 else begin

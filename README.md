@@ -28,7 +28,28 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 9. Happy playing!
 ## Code Structure:
 ![image](https://github.com/AlexHack1/EC311-Final-Project/assets/101854509/f2fd01d9-53f6-4c1c-8b6b-1733c4ec5f26)  
+### Top Module
 - The top module is used to accept user inputs from keyboard, and send those inputs to notegenerator module to play the correct note and octave. 
+
+### Note Generator Module
+- The note generator is the most complex module. It is used to generate the correct frequency for the note and octave that is being played. We use LUTs for 4th octave note frequency and also LUTs for both a sine wave and a triangle wave duty cycle.
+- We implement 3 different duty cycles: 
+   1. Square: A 50% duty cycle is relatively simple to implement since it does not require a LUT or any calculation.
+   2. Sine: A sine wave is more complex. We use a LUT to generate the correct duty cycle for the sine wave. We use a 256x8 LUT to generate the correct duty cycle for the sine wave. We use the following equation to generate the correct duty cycle for the sine wave:
+   ```verilog
+   pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+   ```
+   3. Triangle: A triangle wave also complex. We use a LUT to generate the correct duty cycle for the triangle wave. We use a 256x8 LUT to generate the correct duty cycle for the triangle wave. We use the following equation to generate the correct duty cycle for the triangle wave:
+   ```verilog
+   pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
+   ``` 
+- We also implement octave shifting in this module. Rather than using a excessively large LUT, we reuse the 4th octave LUT and shift the octave up or down depending on the octave that is being played.
+
+### Display Mode Module
+- We implement 2 different display modes: 
+   1. Show Note/Octave: This mode uses the first 4 displays to show note and octave and the last 4 displays to display the type of waveform (square, sine, triangle) that is being played. The triangle waveform does not really look like a triangle.
+   2. Show Frequency: This mode displays frequency calculated in decimal such as `F00261.63` for a C in 4th octave.
+### Everything else
 - wave_lut module is a lookup table used to create different waveforms (sine, triangle). Toggling between different waveforms will change the sound type
 
 ## Outside Sources:
