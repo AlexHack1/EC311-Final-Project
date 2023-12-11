@@ -18,11 +18,13 @@ module top(
 
     reg [3:0] note = 0;          // Note storage
     reg [7:0] octave = 40; //octave storage
+    reg octave_flag; //0 for octave dec, 1 for octave inc
     wire clk_100kHz;
     wire clk_500Hz;
     wire [27:0] current_freq;
     wire [3:0] octave_for_display;
     assign octave_for_display = octave / 4'd10;
+    
     
     
     wire deb_next_note;
@@ -58,7 +60,8 @@ module top(
             // notes
             'h1C:  begin // a --> decrement octave and set note to b
                 note <= 11;
-                octave <= octave-5;
+                octave_flag <= 0;
+                octave <= octave-5; // every 3 above a multiple of 10 means octave dec
             end 
             'h1B:  note = 0;//s  --> C
             'h23:  note = 2;//d --> D
@@ -68,8 +71,9 @@ module top(
             'h3B:  note = 9;//j --> A
             'h42:  note = 11;//k --> B
             'h4B:  begin // l --> increment octave and set note to c
+                octave_flag <= 1;
                 note <= 0;
-                octave <= octave+5;
+                octave <= octave+5; // every 2 below a multiple of 10 means octave inc
             end 
             'h24: note = 1;// e --> C#/Dflat
             'h2D: note = 3;//r --> D#/Ef
@@ -80,29 +84,29 @@ module top(
 
             'h6B: begin //numpad 4 go up by 3 tones (minor 3rd)
                 if (note <9)
-                    note = note +3;
+                    note <= note +3;
                 else begin
-                    octave = octave + 5;
-                    note = note-8; // in case of overflow, go down by 8 and increment octave
+                    octave <= octave + 5;
+                    note <= note-8; // in case of overflow, go down by 8 and increment octave
                     end
 
              end//numpad 7 go up by 3 tones (minor 3rd)        
 
             'h73: begin //numpad 5 --> up by 4 tones (maj 3rd)
                 if (note < 8)
-                    note = note +4;
+                    note <= note +4;
                 else begin
-                    octave = octave + 5;
-                    note = note-7; // octave up by 1 note -7 same as note+4 if overflow
+                    octave <= octave + 5;
+                    note <= note-7; // octave up by 1 note -7 same as note+4 if overflow
                     end
               end
 
             'h74: begin //numpad 9 --> up by 7 tones (maj 5th)
                 if (note < 5)
-                    note = note +7;
+                    note <= note +7;
                 else begin
-                    octave = octave + 5;
-                    note = note-4;
+                    octave <= octave + 5;
+                    note <= note-4;
                     end
               end
        
@@ -158,7 +162,8 @@ module top(
         .duty_cycle_type(wave_type),
         .pwm_out(AUD_PWM),
         .pwm_led(led0),
-        .current_frequency(current_freq)
+        .current_frequency(current_freq),
+        .octave_flag(octave_flag)
     );
     
     debouncer mydeb (

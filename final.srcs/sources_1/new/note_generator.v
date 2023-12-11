@@ -14,6 +14,7 @@ module note_generator #(
 
     input wire [3:0] duty_cycle_type, // 00 is 50% 01 is sine...
     input [7:0] octave_in,
+    input octave_flag,
 
     output reg pwm_out, // PWM output - can be tied directly to a speaker
     output wire pwm_led, //for testing
@@ -87,23 +88,45 @@ module note_generator #(
         if (rst) begin // Reset to middle C
                 frequency = base_freqs[note];
         end
-        case(octave_in)
-            0: frequency = base_freqs[note]/16;
-            5: frequency = base_freqs[note]/8;
-            10: frequency = base_freqs[note]/8;
-            15: frequency = base_freqs[note]/4;
-            20: frequency = base_freqs[note]/4;
-            25: frequency = base_freqs[note]/2;
-            30: frequency = base_freqs[note]/2;
-            35: frequency = base_freqs[note];
-            40: frequency = base_freqs[note];
-            45: frequency = base_freqs[note]*2;
-            50: frequency = base_freqs[note]*2;
-            55: frequency = base_freqs[note]*4;
-            60: frequency = base_freqs[note]*4;
-            65: frequency = base_freqs[note] * 8;
-            70: frequency = base_freqs[note]*8;
-            75: frequency = base_freqs[note] * 8;
+        case(octave_flag)
+            1:
+                case(octave_in)
+                    0: frequency = base_freqs[note]/16;
+                    5: frequency = base_freqs[note]/8;
+                    10: frequency = base_freqs[note]/8;
+                    15: frequency = base_freqs[note]/4;
+                    20: frequency = base_freqs[note]/4;
+                    25: frequency = base_freqs[note]/2;
+                    30: frequency = base_freqs[note]/2;
+                    35: frequency = base_freqs[note];
+                    40: frequency = base_freqs[note];
+                    45: frequency = base_freqs[note]*2;
+                    50: frequency = base_freqs[note]*2;
+                    55: frequency = base_freqs[note]*4;
+                    60: frequency = base_freqs[note]*4;
+                    65: frequency = base_freqs[note] * 8;
+                    70: frequency = base_freqs[note]*8;
+                    75: frequency = base_freqs[note] * 8;
+                endcase
+            0:
+                 case(octave_in)
+                    0: frequency = base_freqs[note]/16;
+                    5: frequency = base_freqs[note]/16;
+                    10: frequency = base_freqs[note]/8;
+                    15: frequency = base_freqs[note]/8;
+                    20: frequency = base_freqs[note]/4;
+                    25: frequency = base_freqs[note]/4;
+                    30: frequency = base_freqs[note]/2;
+                    35: frequency = base_freqs[note]/2;
+                    40: frequency = base_freqs[note];
+                    45: frequency = base_freqs[note];
+                    50: frequency = base_freqs[note]*2;
+                    55: frequency = base_freqs[note]*2;
+                    60: frequency = base_freqs[note]*4;
+                    65: frequency = base_freqs[note]*4;
+                    70: frequency = base_freqs[note]*8;
+                endcase
+            
             default:;
         endcase
          current_frequency = frequency;
