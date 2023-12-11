@@ -1,7 +1,7 @@
 # Project Name: Keyboard Synthesizer
 ## Team Members:
 - James Conlon
-- Alexander Mack
+- Alexander Hack
 - Ethan Levine
 - Michael Barany
 ## Project Demo Video:
