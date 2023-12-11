@@ -18,10 +18,12 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 5. Open the hardware manager and program the device using the bitstream
 6. Plug in either a speaker or headphones to the audio jack on the FPGA (should be located on the back right corner)
 7. Plug in a standard size QWERTY keyboard to the FPGA - the keyboard must have numpad and arrow keys
-8. Use the following key map to play the keyboard: INSERT KEYBOARD MAP THAT JAMES MADE    
-  - The home row (S, D, F, G, H, J, K) cooresponds to the white keys (C, D, E, F, G, A, B)
-  - The row above (E, R, Y, U, I) cooresponds to the black keys (C#, D#, F#, G#, A#)
-  - The number row keys (1, 2, 3, 4, 5, 6, 7, 8) are used to set the octave, A and L keys are used to decrement and increment the octave, respectively
+8. Use the following key map to play the keyboard: INSERT KEYBOARD MAP THAT JAMES MADE
+   - The home row (S, D, F, G, H, J, K) cooresponds to the white keys (C, D, E, F, G, A, B)
+   - The row above (E, R, Y, U, I) cooresponds to the black keys (C#, D#, F#, G#, A#)
+   - The number row keys (1, 2, 3, 4, 5, 6, 7, 8) are used to set the octave, A and L keys are used to decrement and increment the octave, respectively
+   - The B, N, and M keys are used to switch between waveforms (square, sine, triangle)
+   - The numpad keys (4, 5, 6) are used to play different intervals (M 3rd, m 3rd, M 5th)
 9. Happy playing!
 ## Code Structure
 - Block Diagram: https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing
@@ -30,8 +32,5 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 - idk how to write this part
 ## Other
 - This keyboard can be used by physically disabled people
-
-
-[Presentation](https://docs.google.com/presentation/d/1KdgBcJ44fEv6qghZ1U9QxBsIMdMlq52oRwmxUYjcXJE/edit?usp=sharing)
-
-[Planning Doc](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
+- [Presentation](https://docs.google.com/presentation/d/1KdgBcJ44fEv6qghZ1U9QxBsIMdMlq52oRwmxUYjcXJE/edit?usp=sharing)
+- [Planning Doc](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
