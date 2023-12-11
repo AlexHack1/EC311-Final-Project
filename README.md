@@ -53,11 +53,13 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
    2. Show Frequency: This mode displays frequency calculated in decimal such as `F00261.63` for a C in 4th octave.
 ### Everything else
 - Wave_lut module is a lookup table used to create different waveforms (sine, triangle). Toggling between different waveforms will change the sound type.
+- We have code included for storing recordings and playback. That code has been commented out because we were unable to implement it fully, it seems like it was caused by the mismatch in the recording frequency and the playback frequency. We could not figure out how to correct this mismatch so the playback frequency is way off.
+- We were unable to implement a triangle wave due to the complexity of the math involved in scaling the PWM. 
 
 ## Outside Sources:
 ### Code Used:
-- [Keyboard PS/2](https://github.com/Digilent/Nexys-A7-50T-Keyboard/tree/master): With modification 
-- We used our 7 Segment code from Lab 3 with modification.
+- [Keyboard PS/2](https://github.com/Digilent/Nexys-A7-50T-Keyboard/tree/master): With modification by Alex and Michael
+- We used Ethan and James' 7 Segment code from Lab 3 with modifications.
 ### Resources:
 - [Digital Audio 101: Playing Audio From A Microcontroller](https://blog.tarkalabs.com/digital-audio-101-playing-audio-from-a-microcontroller-5df1463616c)
 - [Function_Generator_SystemVerilog](https://github.com/JonathanHonrada/Function_Generator_SystemVerilog)
