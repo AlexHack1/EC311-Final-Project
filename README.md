@@ -27,11 +27,9 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
    - The numpad keys (4, 5, 6) are used to play different intervals (M 3rd, m 3rd, M 5th)
 9. Happy playing!
 ## Code Structure:
-- [Block Diagram](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
+- ![image](https://github.com/AlexHack1/EC311-Final-Project/assets/101854509/f2fd01d9-53f6-4c1c-8b6b-1733c4ec5f26)
 - The top module is used to accept user inputs from keyboard, and send those inputs to notegenerator module to play the correct note and octave. 
 - wave_lut module is a lookup table used to create different waveforms (sine, triangle). Toggling between different waveforms will change the sound type
-- 
-- 
 
 ## Outside Sources:
 ### Code Used:
@@ -44,7 +42,6 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 - [Pulse Width Modulation & FPGA](https://www.compadre.org/advlabs/bfy/files/BFYHandout.pdf)
 
 ## Other:
-- This keyboard can be used by physically disabled people
 - [Presentation](https://docs.google.com/presentation/d/1KdgBcJ44fEv6qghZ1U9QxBsIMdMlq52oRwmxUYjcXJE/edit?usp=sharing)
 - [Planning Doc](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
 - [Meeting Minutes](https://docs.google.com/document/d/1sm5ls5zhQ8x1Nxw--W5M_PYoI4fzIjPUxbyc21xwfzI/edit?usp=sharing)
