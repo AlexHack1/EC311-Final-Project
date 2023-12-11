@@ -16,7 +16,7 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 3. Import the design and constraint source files from the cloned repo
 4. Synthesize the project then generate the bitstream
 5. Open the hardware manager and program the device using the bitstream
-6. Plug in either a speaker or headphones to the audio jack on the FPGA (should be located on the back right corner)
+6. Plug in either a speaker or headphones to the audio jack on the board (should be located on the back right corner)
 7. Plug in a standard size QWERTY keyboard to the FPGA - the keyboard must have numpad and arrow keys
 8. Use this [key map](http://www.keyboard-layout-editor.com/##@@=Esc&_x:1%3B&=F1&=F2&=F3&=F4&_x:0.5%3B&=F5&=F6&=F7&=F8&_x:0.5%3B&=F9&=F10&=F11&=F12&_x:0.25%3B&=PrtSc&=Scroll%20Lock&=Pause%0ABreak%3B&@_y:0.5&a:7%3B&=&_a:4%3B&=Oct%201&=Oct%202&=Oct%203&=Oct%204&=Oct%205&=Oct%206&=Oct%207&_a:7%3B&=&=&_a:4%3B&=Start%20Play%0Aback&=Stop%20Record&=Record&_a:7&w:2%3B&=&_x:0.25&a:4%3B&=Insert&=Home&=PgUp&_x:0.25&a:7%3B&=&=&=&=%3B&@_w:1.5%3B&=&=&=&_a:4%3B&=C%23%2F%2FDf&=D%23%2F%2FEf&_a:7%3B&=&_a:4%3B&=F%23%2F%2FGf&_a:7%3B&=&_a:4%3B&=A%23%2F%2FBf&_a:7%3B&=&_a:4%3B&=Stop%20Play%0Aback&=%7B%0A%5B&_a:7%3B&=&_w:1.5%3B&=&_x:0.25&a:4%3B&=Delete&=End&=PgDn&_x:0.25&a:7%3B&=&=&=&_h:2%3B&=%3B&@_w:1.75%3B&=&_a:4%3B&=Dec.%20Octave&=C&=D&=E&=F&=G&=A&=B&=Inc.%20Octave&=%2F:%0A%2F%3B&_a:7%3B&=&_w:2.25%3B&=&_x:3.5&a:4%3B&=Up%20minor%20third&=Up%20major%20third&=Up%20major%20fifth%3B&@_a:7&w:2.25%3B&=&_a:4%3B&=Show%20Note%2F%2F%0AOctave&=Show%20Freq.&_a:7%3B&=&=&_a:4%3B&=Square%20Duty%20Cycle&=Sine%20Duty%20Cycle&_a:7%3B&=&=&=&=&_w:2.75%3B&=&_x:1.25&a:4%3B&=%E2%86%91&_x:1.25&a:7%3B&=&=&=&_h:2%3B&=%3B&@_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:6.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_x:0.25&a:4%3B&=%E2%86%90&=%E2%86%93&=%E2%86%92&_x:0.25&a:7&w:2%3B&=&=) for playing the keyboard
     ![keyboard-layout](https://github.com/AlexHack1/EC311-Final-Project/assets/66924033/c727ab0a-c748-4651-9aa4-1efc3cc0839b)
@@ -63,7 +63,7 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 - [Nexys A7 Reference Manual](https://digilent.com/reference/programmable-logic/nexys-a7/reference-manual)
 - [PWM Modulation](https://pcbheaven.com/wikipages/PWM_Modulation/)
 - [Pulse Width Modulation & FPGA](https://www.compadre.org/advlabs/bfy/files/BFYHandout.pdf)
-
+- [A Related but More Complicated Project](https://community.element14.com/challenges-projects/project14/musictime/b/blog/posts/building-fpga-based-music-instrument-synthesis-a-simple-test-bench-solution)
 ## Other:
 - [Presentation](https://docs.google.com/presentation/d/1KdgBcJ44fEv6qghZ1U9QxBsIMdMlq52oRwmxUYjcXJE/edit?usp=sharing)
 - [Planning Doc](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
