@@ -26,7 +26,7 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
    - The numpad keys (4, 5, 6) are used to play different intervals (M 3rd, m 3rd, M 5th)
 9. Happy playing!
 ## Code Structure
-- Block Diagram: https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing
+- [Block Diagram](https://docs.google.com/document/d/166IRrm7VCYgW_miiGuuvlWs8nWEqg8Q95AVZoADESpk/edit?usp=sharing)
 - Top module is used to accept user inputs from keyboard, and send those inputs to notegenerator to play the correct note and octave
 - wave_lut module is a lookup table used to create different waveforms (sine, triangle). Toggling between different waveforms will change the sound type
 - idk how to write this part
