@@ -1,4 +1,4 @@
-## Project Name: Keyboard Synthesizer
+# Project Name: Keyboard Synthesizer
 ## Team Members:
 - James Conlon
 - Alexander Mack
