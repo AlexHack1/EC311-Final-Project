@@ -19,13 +19,15 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 6. Plug in either a speaker or headphones to the audio jack on the FPGA (should be located on the back right corner)
 7. Plug in a standard size QWERTY keyboard to the FPGA - the keyboard must have numpad and arrow keys
 8. Use this [key map](http://www.keyboard-layout-editor.com/##@@=Esc&_x:1%3B&=F1&=F2&=F3&=F4&_x:0.5%3B&=F5&=F6&=F7&=F8&_x:0.5%3B&=F9&=F10&=F11&=F12&_x:0.25%3B&=PrtSc&=Scroll%20Lock&=Pause%0ABreak%3B&@_y:0.5&a:7%3B&=&_a:4%3B&=Oct%201&=Oct%202&=Oct%203&=Oct%204&=Oct%205&=Oct%206&=Oct%207&_a:7%3B&=&=&_a:4%3B&=Start%20Play%0Aback&=Stop%20Record&=Record&_a:7&w:2%3B&=&_x:0.25&a:4%3B&=Insert&=Home&=PgUp&_x:0.25&a:7%3B&=&=&=&=%3B&@_w:1.5%3B&=&=&=&_a:4%3B&=C%23%2F%2FDf&=D%23%2F%2FEf&_a:7%3B&=&_a:4%3B&=F%23%2F%2FGf&_a:7%3B&=&_a:4%3B&=A%23%2F%2FBf&_a:7%3B&=&_a:4%3B&=Stop%20Play%0Aback&=%7B%0A%5B&_a:7%3B&=&_w:1.5%3B&=&_x:0.25&a:4%3B&=Delete&=End&=PgDn&_x:0.25&a:7%3B&=&=&=&_h:2%3B&=%3B&@_w:1.75%3B&=&_a:4%3B&=Dec.%20Octave&=C&=D&=E&=F&=G&=A&=B&=Inc.%20Octave&=%2F:%0A%2F%3B&_a:7%3B&=&_w:2.25%3B&=&_x:3.5&a:4%3B&=Up%20minor%20third&=Up%20major%20third&=Up%20major%20fifth%3B&@_a:7&w:2.25%3B&=&_a:4%3B&=Show%20Note%2F%2F%0AOctave&=Show%20Freq.&_a:7%3B&=&=&_a:4%3B&=Square%20Duty%20Cycle&=Sine%20Duty%20Cycle&_a:7%3B&=&=&=&=&_w:2.75%3B&=&_x:1.25&a:4%3B&=%E2%86%91&_x:1.25&a:7%3B&=&=&=&_h:2%3B&=%3B&@_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:6.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_w:1.25%3B&=&_x:0.25&a:4%3B&=%E2%86%90&=%E2%86%93&=%E2%86%92&_x:0.25&a:7&w:2%3B&=&=) for playing the keyboard
-   - The home row (S, D, F, G, H, J, K) cooresponds to the white keys (C, D, E, F, G, A, B)
-   - The row above (E, R, Y, U, I) cooresponds to the black keys (C#, D#, F#, G#, A#)
+    ![keyboard-layout](https://github.com/AlexHack1/EC311-Final-Project/assets/66924033/c727ab0a-c748-4651-9aa4-1efc3cc0839b)
+   - The home row (S, D, F, G, H, J, K) corresponds to the white keys (C, D, E, F, G, A, B)
+   - The row above (E, R, Y, U, I) corresponds to the black keys (C#, D#, F#, G#, A#)
    - The number row keys (1, 2, 3, 4, 5, 6, 7, 8) are used to set the octave
    - A and L keys are used to decrement and increment the octave, respectively
    - The B, N, and M keys are used to switch between waveforms (square, sine, triangle)
    - The numpad keys (4, 5, 6) are used to play different intervals (M 3rd, m 3rd, M 5th)
-9. Happy playing!
+
+10. Happy playing!
 ## Code Structure:
 ![image](https://github.com/AlexHack1/EC311-Final-Project/assets/101854509/f2fd01d9-53f6-4c1c-8b6b-1733c4ec5f26)  
 ### Top Module
