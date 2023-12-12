@@ -5,7 +5,7 @@
 - Ethan Levine
 - Michael Barany
 ## Project Demo Video:
-[](https://youtu.be/HxIg0jTexnA)
+[https://youtu.be/HxIg0jTexnA](https://youtu.be/HxIg0jTexnA)
 ## How To Run Project:
 _Note: this project is only compatible with the Artix-7 xc7a100tcsg324-1 FPGA_  
 1. Clone this repo into some directory on your machine
