@@ -1,38 +1,38 @@
+// Note Generator module with parameters. Many of the values are parameterized so you should be
+// able to change them to make the note generator more flexible. Only the pwm_resolution does not work as that resolution is hard coded in the PWM module.
+
 `timescale 1ns / 1ps
 
 module note_generator #(
     parameter integer NOTE_COUNT = 12,
-    parameter integer PWM_RESOLUTION = 8, // PWM resolution in bits
-    parameter integer OCTAVE_MAX = 7, // Maximum octave (not used for now since we only shift by one octave)
+    parameter integer PWM_RESOLUTION = 8,     // PWM resolution in bits
+    parameter integer OCTAVE_MAX = 7,         // Maximum octave
     parameter integer CLK_FREQUENCY = 100000, // Clock frequency in Hz - 100kHz default
-    //parameter integer DUTY_CYCLE = 2, //default duty cycle of 50% = 2 (meaning 2 is the divisor)
-    parameter integer SINE_LUT_SIZE = 256 // Size of the sine LUT
+    parameter integer SINE_LUT_SIZE = 256     // Size of the sine LUT (also triangle)
 )(
     input wire clk,
     input wire rst,
-    input wire [3:0] note, // Note input (0-11 for C-B)
+    input wire [3:0] note,            // Note input (0-11 for C-B)
 
-    input wire [3:0] duty_cycle_type, // 00 is 50% 01 is sine...
+    input wire [3:0] duty_cycle_type, // 00 is 50% 01 is sine, 10 is triangle
     input [7:0] octave_in,
-    input octave_flag,
+    input octave_flag,                // 1 is up, 0 is down
 
-    output reg pwm_out, // PWM output - can be tied directly to a speaker
-    output wire pwm_led, //for testing
+    output reg pwm_out,               // PWM output - can be tied directly to a speaker
+    output wire pwm_led,              // for testing and debug
     output reg [27:0] current_frequency // Output current frequency
 );
 
-    assign pwm_led = pwm_out;
+    assign pwm_led = pwm_out;         // for testing and debug
 
-    //reg [PWM_RESOLUTION-1:0] counter = 0; // Counter for generating PWM signal
+    //reg [PWM_RESOLUTION-1:0] counter = 0; // Idealy we would parameterize the counter but we had overflow issues so we settled for a 32 bit reg
     reg [31:0] counter = 0;
-    reg [31:0] frequency; // Frequency for the note
-    //reg [2:0] octave_reg = 3'd4; // Octave count (starting at middle C)
+    reg [31:0] frequency; // Frequency for the note (in Hz * 100)
     reg [7:0] sine_index = 0;
     
     wire [5:0] sine_value;
     wire [5:0] triangle_value;
     
-
     //wave lut
     wave_lut wavelut (
         .sine_input(sine_index),
@@ -41,11 +41,11 @@ module note_generator #(
         .triangle_output(triangle_value)
     );
 
-    // add a counter to slow the sine_index counter
-    
-    reg [31:0] sine_wave_counter = 0; // New counter for controlling sine wave speed
 
-    // Sine Wave Generator with controlled speed
+    // Unused since we have a new indexer at the bottom of the module
+    reg [31:0] sine_wave_counter = 0; // counter for controlling sine wave speed
+    // Sine Wave Generator with controlled speed 
+    /*
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             sine_index <= 0;
@@ -59,7 +59,7 @@ module note_generator #(
             end
         end
     end
-    
+    */
     
     // Frequency LUT for base octave (4th octave, ie middle C)
     integer base_freqs [0:NOTE_COUNT-1];
@@ -84,7 +84,6 @@ module note_generator #(
 
     // octave adjustment based on octave_in
     always @ (posedge clk) begin
-        //octave_reg <= octave_in;
         if (rst) begin // Reset to middle C
                 frequency = base_freqs[note];
         end
@@ -129,7 +128,7 @@ module note_generator #(
             
             default:;
         endcase
-         current_frequency = frequency;
+        current_frequency = frequency; // for display on the 7segment
     end
 
     
@@ -147,14 +146,14 @@ module note_generator #(
             // Increment the counter each clock cycle
             clk_divider_counter <= clk_divider_counter + 1;
     
-            // Change the divided clock value when counter reaches a threshold
-            // Adjust the '50000' value to change the clock division factor
+            // Change the divided clock value when counter reaches 5000
             if (clk_divider_counter >= 5000) begin
                 clk_divider_counter <= 0;
                 divided_clk <= ~divided_clk;
             end
         end
     end
+
 
     // PWM Output Block
     always @(posedge clk or posedge rst) begin
@@ -177,11 +176,11 @@ module note_generator #(
                     end
                 2'b01: begin
                         // sine duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * sine_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY) / (frequency) * sine_value)) ? 1'b1 : 1'b0;
                     end
                 2'b10: begin
                     //triangle duty cycle
-                        pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * triangle_value / 1)) ? 1'b1 : 1'b0;
+                        pwm_out <= (counter < ((CLK_FREQUENCY) / (frequency) * triangle_value)) ? 1'b1 : 1'b0;
                     end
                 default: begin
                     // Default to 50% Duty Cycle
@@ -192,24 +191,23 @@ module note_generator #(
     end
 
 
+    reg [31:0] sine_increment;       // Increment value for sine_index
+    reg [31:0] sine_accumulator = 0; // Accumulator for fractional increments (needed to ensure frequency is accurate)
 
-    reg [31:0] sine_increment; // Increment value for sine_index
-    reg [31:0] sine_accumulator = 0; // Accumulator for fractional increments
-
-    // Calculate the Sine Wave Increment
+    // sbasic ine wave increment
     always @(posedge clk) begin
         if (rst) begin
             sine_increment <= 0;
             sine_accumulator <= 0;
         end else begin
-            // Calculate the increment per clock cycle
-            // Adjust the formula based on your clock frequency and LUT size
             sine_increment <= (frequency * SINE_LUT_SIZE) / CLK_FREQUENCY;
         end
     end
 
 
-    // PWM sine index adjustment for sine wave mode
+    // PWM sine indexer adjuster
+    // This indexer does not work with the triangle wave for some reason
+    // We do not know how to fix triangle because this relies on the low pass filtering on the board to output proper triangle sound
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             sine_index <= 0;

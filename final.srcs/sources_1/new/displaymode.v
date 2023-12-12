@@ -1,3 +1,6 @@
+// Does some BCD conversion and supports the two display modes
+// Frequency and note/octave/wave animation
+
 `timescale 1ns / 1ps
 
 module display_mode(
@@ -112,7 +115,6 @@ module display_mode(
 
                 
                 // Only increment animation counter when delay counter resets
-
                     if (delay_counter == 0) begin
                     case (pwm_type)
                         3'b000: // square wave
@@ -121,7 +123,7 @@ module display_mode(
                             animation_counter <= (animation_counter + 1) % 4; // 4 steps for sine wave
                         3'b010: // triangle wave
                             animation_counter <= (animation_counter + 1) % 2; // 2 steps for triangle wave
-                        default: // Other cases
+                        default:
                             animation_counter <= animation_counter;
                     endcase
                 end
@@ -172,7 +174,7 @@ module display_mode(
                             end
                         endcase
                     end
-                    4'b0010: begin // triangle wave
+                    4'b0010: begin // triangle wave (doesnt really look like a triangle but whatever)
                         case (animation_counter)
                             0: begin
                                 val_TBD7 = triangle_0;
@@ -204,7 +206,7 @@ module display_mode(
             3'b001: begin // Mode 1: Display frequency
 
                 // Division and modulo operations to extract each digit for decimal display
-                // THE REGS ARE NAMED WRONG HERE 
+                // THE REGS ARE NAMED WRONG HERE BUT VALUES ARE RIGHT
                 hundred_thousands = (frequency / 100000) % 10;
                 ten_thousands = (frequency / 10000) % 10;
                 thousands = (frequency / 1000) % 10;
@@ -215,7 +217,8 @@ module display_mode(
                 hundredths = (frequency / 1000) % 10;
 
                 // Mapping each digit to the display values
-               /* val_TBD0 <= 6'hF;
+                /* 
+                val_TBD0 <= 6'hF;
                 val_TBD1 <= {1'b0, 1'b0, ten_thousands};
                 val_TBD2 <= {1'b0, 1'b0, thousands};
                 val_TBD3 <= {1'b0, 1'b0, hundreds};

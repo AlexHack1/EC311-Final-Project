@@ -1,3 +1,7 @@
+// Basic square wave generator with a variable duty cycle input
+// Used for presentation but not on FPGA
+// We adapted for square wave
+
 module basic_pwm_generator #(
     parameter integer PWM_RESOLUTION = 8 // Use 8 bits for resolution
 )(

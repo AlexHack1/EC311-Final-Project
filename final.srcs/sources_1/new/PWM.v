@@ -1,3 +1,7 @@
+// Basic PWM generator with a variable duty cycle input
+// Used for presentation and adapted for sine and trinagle waves
+// Not used on FPGA
+
 module pwm_generator #(
     parameter integer PWM_RESOLUTION = 8 // default 8 bit
 )(

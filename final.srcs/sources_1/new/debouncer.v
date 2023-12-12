@@ -1,3 +1,6 @@
+// Unused in project, but this is another debouncer we were working with
+// for the keyboard from lab 4.
+
 `timescale 1ns / 1ps
 
 module debouncer(

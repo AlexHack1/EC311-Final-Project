@@ -1,3 +1,6 @@
+// Used in recording module to show down signifcantly to reduce the size of data 
+// and allow for longer recording
+
 `timescale 1ns / 1ps
 
 // basic divider divodes by 10

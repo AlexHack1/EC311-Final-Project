@@ -1,33 +1,32 @@
 `timescale 1ns / 1ps
 
 module top(
-    input CLK100MHZ,       // FPGA board clock (assumed to be much higher than 1kHz)
-    input rst_button,      // Reset button
-    input next_note_button,// Button to change to the next note
-
+    input CLK100MHZ,          // FPGA board clock (assumed to be much higher than 1kHz)
+    input rst_button,         // Reset button
+    input next_note_button,   // Button to change to the next note
    
     input PS2_CLK,
     input PS2_DATA,
     
     // outputs to board
-    output [7:0] cathode_seg,   // 7-segment cathode outputs
-    output [7:0] anode_seg,      // 7-segment anode outputs (8 bits since we include decimal point here)
-    output wire AUD_PWM,         // Output to a speaker or an 
-    output wire led0,        // for debug
-    output wire led1, // for in playback
-    output wire led2 // for recording
+    output [7:0] cathode_seg, // 7-segment cathode outputs
+    output [7:0] anode_seg,   // 7-segment anode outputs (8 bits since we include decimal point here)
+    output wire AUD_PWM,      // Output to a speaker or an 
+    output wire led0          // for debug - display pwm
+    //output wire led1,       // for in playback (debug)
+    //output wire led2        // for recording (debug)
 );
-
-    reg [3:0] note = 0;          // Note storage
-    reg [7:0] octave = 40; //octave storage
+    // STOREAGE
+    reg [3:0] note = 0;    // Note storage
+    reg [7:0] octave = 40; // octave storage
+    
+    
     reg octave_flag; //0 for octave dec, 1 for octave inc
     wire clk_100kHz;
     wire clk_500Hz;
     wire [27:0] current_freq;
     wire [3:0] octave_for_display;
     assign octave_for_display = octave / 4'd10;
-   
-    
     
     wire deb_next_note;
     
@@ -40,8 +39,6 @@ module top(
     reg [2:0] disp_mode = 00;
     reg [2:0] wave_type = 00;
 
-
-
     // for recording and playback
     /*
     reg start_recording = 0;
@@ -52,8 +49,8 @@ module top(
     reg in_playback_mode = 0; // 1 if in playback mode, 0 if not
     wire clk_50hz;
     clock_divider_50hz div50hz (
-        .clk_500hz(clk_500Hz), // Connect to your 500Hz clock
-        .clk_50hz(clk_50hz)    // 50Hz output clock
+        .clk_500hz(clk_500Hz),
+        .clk_50hz(clk_50hz)
     );
     
     // for debug
@@ -79,21 +76,24 @@ module top(
     /// KEYBOARD STUFF /// 
     always @ (posedge key_flag) begin //keybinds
 
-        // enter playback mode
+        // enter playback mode 
+        // Left out due to an error where playback mode would:
+        // 1. not exit when pressing the exit key
+        // 2. play at the wrong freuqency
         /* if (playback) begin
             in_playback_mode <= 1;
         end else if (stop_recording || start_recording) begin
             in_playback_mode <= 0;
-        end */
+        end 
         // exit playback mode
-        /*if (keycode[7:0] == 'h4D && in_playback_mode) begin // p--> exit playback
+        if (keycode[7:0] == 'h4D && in_playback_mode) begin // p--> exit playback
             in_playback_mode <= 0;
             playback <= 0;
         end */
 
         case(keycode[7:0]) // only need to look at 8 bits of keycode
 
-            // notes
+            // note playback
             'h1C:  begin // a --> decrement octave and set note to b
                 note <= 11;
                 octave_flag <= 0;
@@ -117,7 +117,8 @@ module top(
             'h3C: note = 8;//u --> G#/Af
             'h43: note = 10;//i --> A#/Bf
 
-            //  NUMPAD //
+            //  NUMPAD - Left out due to these keys causing many incrementation and decrementation errors
+            //  (Likely due to an issue with the debouncing of the keys)
             /*
             'h6B: begin //numpad 4 go up by 3 tones (minor 3rd)
                     note <= note + 3;
@@ -128,7 +129,6 @@ module top(
                     note <= note + 3;
                 end
              end      
-
             'h73: begin //numpad 5 --> major third go up by 4 tones
                 if (note > 7) begin
                     octave <= octave + 5;
@@ -138,7 +138,6 @@ module top(
                 end
                     
               end
-
             'h74: begin //numpad 6 --> up by 7 tones (maj 5th)
                 if (note > 4) begin
                     octave <= octave + 5;
@@ -187,7 +186,6 @@ module top(
                 stop_recording <= 0;
                 in_playback_mode <= 1;
             end
-
             */
                        
             default:;
@@ -207,13 +205,12 @@ module top(
         .clock_out(clk_500Hz)
     );
 
-    // Instantiate note_generator with 100kHz clock
+    // note generator module with parameters
     note_generator #(
         .NOTE_COUNT(12),
         .PWM_RESOLUTION(8),
         .OCTAVE_MAX(7),
         .CLK_FREQUENCY(100000) // 100kHz clock
-        //.DUTY_CYCLE(2)         // Duty cycle (for square wave = 2)
     ) my_note_generator (
         .clk(clk_100kHz),
         .rst(rst_button),
@@ -226,12 +223,14 @@ module top(
         .octave_flag(octave_flag)
     );
     
+    // debouncer for next note button (used in debug)
+    /*
     debouncer mydeb (
         .clk(CLK100MHZ),
         .button(next_note_button),
         .clean(deb_next_note)
     );
-    
+    */
     
    
     wire [5:0] disp0, disp1, disp2, disp3, disp4, disp5, disp6, disp7;

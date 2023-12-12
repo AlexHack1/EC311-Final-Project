@@ -37,7 +37,7 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
    1. Square: A 50% duty cycle is relatively simple to implement since it does not require a LUT or any calculation.
    2. Sine: A sine wave is more complex. We use a LUT to generate the correct duty cycle for the sine wave. We use a 256x8 LUT to generate the correct duty cycle for the sine wave. We use the following equation to generate the correct duty cycle for the sine wave:
    ```verilog
-   pwm_out <= (counter < ((CLK_FREQUENCY*1) / (frequency) * sine_value)) ? 1'b1 : 1'b0;
+   pwm_out <= (counter < ((CLK_FREQUENCY) / (frequency) * sine_value)) ? 1'b1 : 1'b0;
    ```
    3. Triangle: A triangle wave also complex. We use a LUT to generate the correct duty cycle for the triangle wave. We use a 256x8 LUT to generate the correct duty cycle for the triangle wave. We use the following equation to generate the correct duty cycle for the triangle wave:
    ```verilog
@@ -55,6 +55,7 @@ git clone https://github.com/AlexHack1/EC311-Final-Project.git
 - Wave_lut module is a lookup table used to create different waveforms (sine, triangle). Toggling between different waveforms will change the sound type.
 - We have code included for storing recordings and playback. That code has been commented out because we were unable to implement it fully, it seems like it was caused by the mismatch in the recording frequency and the playback frequency. We could not figure out how to correct this mismatch so the playback frequency is way off.
 - We were unable to implement a triangle wave due to the complexity of the math involved in scaling the PWM. 
+- Our code uses many different clocks with notes, PWM, octave, display, recording, and playback. We defined most of them in separate modules so you could reuse them elsewhere but we did not end up using them elsewhere as every element needed a different clock.
 
 ## Outside Sources:
 ### Code Used:

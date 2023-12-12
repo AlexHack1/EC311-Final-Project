@@ -1,3 +1,7 @@
+// Clock divider for the seven segment display (500Hz)
+// It looks good in person but the refresh rate is slow enough that it flickers on camera
+// which is unfortunate because we added an animated sine, square, and triangle wave that you can't really see on camera
+
 `timescale 1ns / 1ps
 
 module sev_clock(

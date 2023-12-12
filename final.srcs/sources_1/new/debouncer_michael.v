@@ -1,3 +1,5 @@
+// keyboard debouncer
+
 `timescale 1ns / 1ps
 module debouncer_michael(
     input clk,

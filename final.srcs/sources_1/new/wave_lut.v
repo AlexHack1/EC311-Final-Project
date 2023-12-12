@@ -1,3 +1,6 @@
+// This is the sine and triangle wave LUT. It is a 256 entry LUT, with 6 bits of output. Each output is a percentage of the
+// Duty cycle, so from 0-100%
+
 `timescale 1ns / 1ps
 
 module wave_lut(

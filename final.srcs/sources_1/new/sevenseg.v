@@ -1,3 +1,7 @@
+// This module runs the display. We modified it from lab 3 to support decimal point display
+// It uses a custom 6 bit BCD decoder so regular 0-F Hex works plus additional displays
+// and animations are also supported.
+
 `timescale 1ns / 1ps
 
 module segment_disp(
@@ -13,7 +17,6 @@ module segment_disp(
     input [5:0] val_TBD7, // display 7
     input clock_in,
 	input reset_in,
-	//input [3:0] count_in,
 	output reg [7:0] cathode_out, //7 segments
 	output reg [7:0] anode_out //to be used later
     );

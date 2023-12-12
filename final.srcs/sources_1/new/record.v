@@ -1,17 +1,23 @@
+// Unused in the final project
+// The recording works and we got playback, but we had to change the input clock to 50Hz
+// The note generation is 100kHz, but the recording and playback is 50Hz which is why he had trouble with output
+// We had to scale down to 50Hz because 10kHz would use way too much memory or only be able to record music for milliseconds
+// However, that means the playback was at the wrong frequency and we were unable to fix it
+
 `timescale 1ps/1ps
 
 module recording_module(
-    input wire clk,
-    input wire start_recording, // start recording
-    input wire stop_recording,  // stop recording
-    input wire playback,        // start playback
+    input wire clk,             // 50 hz
+    input wire start_recording,
+    input wire stop_recording,
+    input wire playback,
     input wire [3:0] note,      // Note to record
     input wire [7:0] octave,    // Octave to record
     output reg [3:0] playback_note,
     output reg [7:0] playback_octave
 );
 
-    localparam MAX_NOTES = 1000;
+    localparam MAX_NOTES = 1000; // 1000 notes is about 20 seconds of recording given 50Hz clock 
     reg [3:0] note_log[0:MAX_NOTES-1];
     reg [7:0] octave_log[0:MAX_NOTES-1];
     reg [31:0] timestamp_log[0:MAX_NOTES-1];
@@ -61,6 +67,5 @@ module recording_module(
             playback_time <= 0;
         end
     end
-
 
 endmodule

@@ -1,3 +1,6 @@
+// 100 MHz clock divider to 100 kHz
+// used in note_generator
+
 module clk_div(
     input wire clk_in,  // Input clock (100 MHz)
     output reg clk_out  // Output clock (100 kHz)
